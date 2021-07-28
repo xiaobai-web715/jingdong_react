@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/assets/css/common/public.css"],"names":[],"mappings":"AAAA,KACI,UAAU,CACV,WAAW,CACX,cACJ,CAEA,QACI,UAAU,CACV,WAAW,CACX,eACJ","file":"3.d943b20d.chunk.css","sourcesContent":[".app{\r\n    width:100%;\r\n    height:100%;\r\n    background:#FF0000;\r\n}\r\n\r\n.header{\r\n    width:100%;\r\n    height:30px;\r\n    background:#00ffff;\r\n}"]}
