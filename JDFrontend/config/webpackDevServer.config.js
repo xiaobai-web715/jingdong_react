@@ -101,7 +101,17 @@ module.exports = function (proxy, allowedHost) {
     },
     public: allowedHost,
     // `proxy` is run between `before` and `after` `webpack-dev-server` hooks
-    proxy,
+    // proxy,这里是webpack默认的配置代理,我们可以通过这里去修改成我们自己的代理
+    proxy:{
+      "/proxy" : {
+        "target" : "http://vueshop.glbuys.com",
+        "changeOrigin" : "true",
+        //"changeOrigin" : "true",这个的意思就是支持跨域
+        "pathRewrite" : {
+          "^/proxy" : ""
+        }
+      }
+    },
     before(app, server) {
       // Keep `evalSourceMapMiddleware` and `errorOverlayMiddleware`
       // middlewares before `redirectServedPath` otherwise will not have any effect

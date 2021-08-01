@@ -17,6 +17,25 @@ html , body{
     -webkit-touch-callout: none; /*禁止链接长按弹出选项*/
 }
 
+@media screen and (min-width : 280px) {
+    html , body {
+        font-size : 15.13px !important;
+        /* 280*20/370这里是以375像素为基准 */
+    }
+}
+
+@media screen and (min-width : 320px) {
+    html , body {
+        font-size : 14.9px !important;
+    }
+}
+
+@media screen and (min-width : 375px) {
+    html , body {
+        font-size : 20px !important;
+    }
+}
+
 @media screen and (min-width : 400px) {
     html , body {
         font-size : 21.3px !important;

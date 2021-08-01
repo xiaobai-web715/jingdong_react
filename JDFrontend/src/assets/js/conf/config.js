@@ -1,11 +1,12 @@
-let prodUrl = 'http://reactshop.glbuys.com';
+let prodUrl = 'http://vueshop.glbuys.com';
 // 生产者环境
 
-let devUrl = 'http://reactshop.glbuys.com';
-// 开发者环境
+// let devUrl = 'http://vueshop.glbuys.com';
+let devUrl = '/proxy';
+// 开发者环境(这里就可以替换成咱们自己写的代理)
 
 let baseUrl = process.env.NODE_ENV === 'development' ? devUrl : prodUrl;
-
+// development就是开发者环境
 // console.log(process.env.NODE_ENV)
 
 const config = {

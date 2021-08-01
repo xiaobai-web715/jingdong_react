@@ -80,22 +80,7 @@
     border:none;
 }
 
-.swiper-wrap .image1{
-    background-image:url('../../../images/dongman/28.jpg');
-    background-size:100%;
-    background-repeat:no-repeat;
-    background-position:center;
-}
-
-.swiper-wrap .image2{
-    background-image:url('../../../images/dongman/123.jpg');
-    background-size:100%;
-    background-repeat:no-repeat;
-    background-position:center;
-}
-
-.swiper-wrap .image3{
-    background-image:url('../../../images/dongman/577.jpg');
+.swiper-wrap .image{
     background-size:100%;
     background-repeat:no-repeat;
     background-position:center;
