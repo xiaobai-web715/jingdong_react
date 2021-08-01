@@ -1,7 +1,16 @@
 //请求幻灯片数据的方法
 // pType = 'get'默认给予get请求
-const requestHDP = (pUrl , pType = 'GET') =>{
+const getSwiper = (pUrl , pType = 'GET') =>{
     return fetch(pUrl , {method : pType}).then(res => res.json());
 }
 
-export default requestHDP;
+const getNav = (pUrl , pType = 'GET') =>{
+    return fetch(pUrl , {method : pType}).then(res => res.json());
+}
+
+const getGoodsLevel = (pUrl , pType = 'GET') =>{
+    return fetch(pUrl , {method : pType}).then(res => res.json());
+}
+
+
+export {getSwiper , getNav , getGoodsLevel};
