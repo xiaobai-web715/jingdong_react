@@ -1,6 +1,6 @@
 import React , {useEffect , useState}from 'react'
 import _ from 'lodash'
-import {getSwiper , getNav , getGoodsLevel} from '../../../assets/js/libs/request'
+import {getSwiper , getNav , getGoodsLevel , getReco} from '../../../assets/js/libs/request'
 import config from '../../../assets/js/conf/config'
 import GOODS_TYPE from './mold.js'
 import '../../../assets/css/common/home/home.css'
@@ -12,10 +12,31 @@ import Swiper from '../../../assets/js/libs/swiper.min.js'
 const HomeIndex = () => {
     const[dataSwiper ,  setDataSwiper] = useState([]);
     const[dataNav ,  setDataNav] = useState([]);
-    const[dataGoodsLevel , setDataGoodsLevel] = useState();
-    // console.log('dataSwiper' , dataSwiper)
+    const[dataGoodsLevel , setDataGoodsLevel] = useState([]);
+    const[dataReco , setDataReco] = useState([]);
+    //这里设置一个状态用来触发顶部搜索在特定事件变红
+    const[scrollBar , setScrollBar] = useState(false);
+    console.log('scrollBar' , scrollBar)
     // console.log('1')
-
+    
+    //监听滚动条滚动事件
+    useEffect(() => {
+        //设置一个开关来保证组价清除时不会再次更新事件监听触发的状态改变
+        let scrollChoose = true;
+        const eventScorll = () =>{
+            let iScorllTop = document.documentElement.scrollTop || document.body.scrollTop;
+            if(scrollChoose){
+                iScorllTop >= 80 ? setScrollBar(true):setScrollBar(false);
+            }
+        }
+        //这里在render加载完成后执行一次,给window挂上一个事件监听函数,这样就可以在滚动条改变位置时触发上面的函数了
+        window.addEventListener('scroll' , eventScorll.bind(null));
+        //!!!如何在卸载的时候取消掉事件监听函数,这里在useEffect中也有解决方式,就是返回一个函数,当useEffect返回的是一个函数的时候,React将会在执行清除操作时调用它
+        return()=>{
+            scrollChoose = false            
+            window.removeEventListener('scroll' , eventScorll.bind(null))
+        }
+    },[])
     // 获取接口数据
     useEffect(()=>{
         // 这里可以试着打印一下，输出的结果是1,4,3(2bu执行的原因是状态改变了);然后状态改变1,4,3,2,因为await会使得后面的执行必须等待前一个await执行完成才可以(所以最好加try-catch)
@@ -83,7 +104,7 @@ const HomeIndex = () => {
         const fetchGoodsLevel = async()=>{
             try{
                 const res = await getGoodsLevel(config.baseUrl + '/api/home/index/goodsLevel?token=' + config.token);
-                console.log('res' , res);
+                // console.log('res' , res);
                 setDataGoodsLevel(_.get(res , ['data'] , []))
             }catch(err){
                 console.log('请求产品分类数据出错了' , err);
@@ -92,13 +113,26 @@ const HomeIndex = () => {
         fetchGoodsLevel()
     },[])
 
+    //获取为你推荐数据
+    useEffect(() => {
+        const fetchReco = async() =>{
+           try{
+               const res = await getReco(config.baseUrl + '/api/home/index/recom?token=' + config.token);
+               console.log('res' , res);
+               setDataReco(_.get(res , ['data'] , []));
+           }catch(err){
+               console.log('请求为你推荐数据出错' , err)
+           } 
+        }
+        fetchReco();
+    },[])
     //这里加一个状态刷新的情况,要不然初始挂载只有一张幻灯片
     // console.log('4')
     return (
         <div className='page'>
             {/* 顶部搜索 */}
             <div>
-                <div className='search-header red-bg'>
+                <div className={'search-header ' + (scrollBar?'red-bg':'')}>
                     <div className='classify-icon'></div>
                     <div className = 'search-wrap'>
                         <div className = 'search-icon'></div>
@@ -213,6 +247,7 @@ const HomeIndex = () => {
                     }):''
                 }
             </div>
+            {/* 为你推荐 */}
             <div className='rec-title-wrap'>
                 <div className='line'></div>
                 <div className='reco-text-wrap'>
@@ -222,26 +257,16 @@ const HomeIndex = () => {
                 <div className='line'></div>
             </div>
             <div className='reco-item-wrap'>
-                <div className='reco-item'>
-                    <div className='image'><img alt=''></img></div>
-                    <div className='title'>ONLY冬装新品雪纺拼接流苏腰带长宽连衣裙女</div>
-                    <div className='price'>￥399</div>
-                </div>
-                <div className='reco-item'>
-                    <div className='image'><img alt=''></img></div>
-                    <div className='title'>ONLY冬装新品雪纺拼接流苏腰带长宽连衣裙女</div>
-                    <div className='price'>￥399</div>
-                </div>
-                <div className='reco-item'>
-                    <div className='image'><img alt=''></img></div>
-                    <div className='title'>ONLY冬装新品雪纺拼接流苏腰带长宽连衣裙女</div>
-                    <div className='price'>￥399</div>
-                </div>
-                <div className='reco-item'>
-                    <div className='image'><img alt=''></img></div>
-                    <div className='title'>ONLY冬装新品雪纺拼接流苏腰带长宽连衣裙女</div>
-                    <div className='price'>￥399</div>
-                </div>
+                {dataReco.map((item , index)=>{
+                    // 这个return是必须的
+                    return(
+                        <div className='reco-item' key={index}>
+                            <div className='image'><img src={item.image} alt={item.title}></img></div>
+                            <div className='title'>{item.title}</div>
+                            <div className='price'>￥{item.price}</div>
+                        </div>
+                    )
+                })}
             </div>
         </div>
     )

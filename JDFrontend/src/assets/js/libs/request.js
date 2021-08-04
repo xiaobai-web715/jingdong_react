@@ -12,5 +12,9 @@ const getGoodsLevel = (pUrl , pType = 'GET') =>{
     return fetch(pUrl , {method : pType}).then(res => res.json());
 }
 
+const getReco = (pUrl , pType='GET') =>{
+    return fetch(pUrl , {method : pType}).then(res => res.json());
+}
 
-export {getSwiper , getNav , getGoodsLevel};
+
+export {getSwiper , getNav , getGoodsLevel , getReco};
