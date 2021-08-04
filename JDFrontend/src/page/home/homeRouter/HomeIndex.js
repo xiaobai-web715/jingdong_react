@@ -1,6 +1,10 @@
 import React , {useEffect , useState}from 'react'
 import _ from 'lodash'
+//请求数据的方法
 import {getSwiper , getNav , getGoodsLevel , getReco} from '../../../assets/js/libs/request'
+//图片懒加载的方法
+import { lazyImg } from '../../../assets/js/utils/utils'
+//config配置文件
 import config from '../../../assets/js/conf/config'
 import GOODS_TYPE from './mold.js'
 import '../../../assets/css/common/home/home.css'
@@ -18,7 +22,7 @@ const HomeIndex = () => {
     const[scrollBar , setScrollBar] = useState(false);
     console.log('scrollBar' , scrollBar)
     // console.log('1')
-    
+
     //监听滚动条滚动事件
     useEffect(() => {
         //设置一个开关来保证组价清除时不会再次更新事件监听触发的状态改变
@@ -126,6 +130,10 @@ const HomeIndex = () => {
         }
         fetchReco();
     },[])
+    //函数组件实现图片懒加载
+    useEffect(()=>{
+        lazyImg();
+    } , [dataReco , dataGoodsLevel])
     //这里加一个状态刷新的情况,要不然初始挂载只有一张幻灯片
     // console.log('4')
     return (
@@ -195,18 +203,18 @@ const HomeIndex = () => {
                                                     <div className={'goods-title'+ (index + 1)}>{item.items[0].title}</div>
                                                     <div className={'goods-text'+ (index + 1)}>精品打折</div>
                                                     <div className={'goods-price'+ (index + 1)}>{item.items[0].price}</div>
-                                                    <div className={'goods-img'+ (index + 1)}><img src={item.items[0].image} alt=''></img></div>
+                                                    <div className={'goods-img'+ (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[0].title} data-echo={item.items[0].image}></img></div>
                                                 </div>
                                                 <div className='goods-level1-item1'>
                                                     <div className='goods-row'>
                                                         <div className={'goods-row-title'}>{item.items[1].title}</div>
                                                         <div className={'goods-row-text'}>品质精挑</div>
-                                                        <div className={'goods-row-img'}><img src={item.items[1].image} alt={item.items[1].title}></img></div>
+                                                        <div className={'goods-row-img'}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[1].title} data-echo={item.items[1].image}></img></div>
                                                     </div>
                                                     <div className='goods-row'>
                                                         <div className='goods-row-title'>{item.items[2].title}</div>
                                                         <div className='goods-row-text'>品质精挑4折起</div>
-                                                        <div className='goods-row-img'><img src={item.items[2].image} alt={item.items[2].title}></img></div>
+                                                        <div className='goods-row-img'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[2].title} data-echo={item.items[2].image}></img></div>
                                                     </div>
                                                 </div>
                                             </>
@@ -216,12 +224,12 @@ const HomeIndex = () => {
                                                 <div className='goods-level1-item0'>
                                                     <div className={'goods-title' + (index + 1)}>{item.items[0].title}</div>
                                                     <div className={'goods-text' + (index + 1)}>火爆开售</div>
-                                                    <div className={'goods-img' + (index + 1)}><img src={item.items[0].image} alt={item.items[0].title}></img></div>
+                                                    <div className={'goods-img' + (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[0].title} data-echo={item.items[0].image}></img></div>
                                                 </div>
                                                 <div className='goods-level1-item0'>
                                                     <div className={'goods-title' + (index + 1)}>{item.items[1].title}</div>
                                                     <div className={'goods-text' + (index + 1)}>火爆开售</div>
-                                                    <div className={'goods-img' + (index + 1)}><img src={item.items[1].image} alt={item.items[1].title}></img></div>
+                                                    <div className={'goods-img' + (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[1].title} data-echo={item.items[1].image}></img></div>
                                                 </div>
                                             </> 
                                         )
@@ -234,7 +242,7 @@ const HomeIndex = () => {
                                             return(
                                                 <div className='goods-list' key={item_slice.title}>
                                                     <div className='title'>{item_slice.title}</div>
-                                                    <div className='image'><img src={item_slice.image} alt={item_slice.title}></img></div>
+                                                    <div className='image'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item_slice.title} data-echo={item_slice.image}></img></div>
                                                     <div className='price'>￥{item_slice.price}</div>
                                                     <div className='unprice'>￥388</div>
                                                 </div> 
@@ -261,7 +269,7 @@ const HomeIndex = () => {
                     // 这个return是必须的
                     return(
                         <div className='reco-item' key={index}>
-                            <div className='image'><img src={item.image} alt={item.title}></img></div>
+                            <div className='image'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.title} data-echo={item.image}></img></div>
                             <div className='title'>{item.title}</div>
                             <div className='price'>￥{item.price}</div>
                         </div>

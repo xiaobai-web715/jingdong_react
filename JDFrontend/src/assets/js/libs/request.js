@@ -1,19 +1,55 @@
+import ReactDOM  from "react-dom";
+// ReactDOM(虚拟dom)可以加快获取dom的速度
+let oLoad = ReactDOM.findDOMNode(document.getElementById('page-load'));
+// 显示正在加载的状态
+const showLoad = () =>{
+    oLoad.style.display = 'block';
+}
+//正在加载的状态消失
+const hideLoad = () =>{
+    oLoad.style.display = 'none';
+}
+
 //请求幻灯片数据的方法
 // pType = 'get'默认给予get请求
 const getSwiper = (pUrl , pType = 'GET') =>{
-    return fetch(pUrl , {method : pType}).then(res => res.json());
+    // 开始请求的时候加载动态
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res =>{ 
+        // 请求完成之后停止加载
+        hideLoad()
+        return res.json()
+    });
 }
 
 const getNav = (pUrl , pType = 'GET') =>{
-    return fetch(pUrl , {method : pType}).then(res => res.json());
+   // 开始请求的时候加载动态
+   showLoad();
+   return fetch(pUrl , {method : pType}).then(res =>{ 
+       // 请求完成之后停止加载
+       hideLoad()
+       return res.json()
+   });
 }
 
 const getGoodsLevel = (pUrl , pType = 'GET') =>{
-    return fetch(pUrl , {method : pType}).then(res => res.json());
+    // 开始请求的时候加载动态
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res =>{ 
+        // 请求完成之后停止加载
+        hideLoad()
+        return res.json()
+    });
 }
 
 const getReco = (pUrl , pType='GET') =>{
-    return fetch(pUrl , {method : pType}).then(res => res.json());
+    // 开始请求的时候加载动态
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res =>{ 
+        // 请求完成之后停止加载
+        hideLoad()
+        return res.json()
+    });
 }
 
 
