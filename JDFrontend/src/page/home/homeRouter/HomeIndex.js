@@ -13,7 +13,7 @@ import '../../../assets/css/common/home/home.css'
 import '../../../assets/css/common/swiper/swiper.min.css'
 import Swiper from '../../../assets/js/libs/swiper.min.js'
 
-const HomeIndex = () => {
+const HomeIndex = (props) => {
     const[dataSwiper ,  setDataSwiper] = useState([]);
     const[dataNav ,  setDataNav] = useState([]);
     const[dataGoodsLevel , setDataGoodsLevel] = useState([]);
@@ -136,12 +136,18 @@ const HomeIndex = () => {
     } , [dataReco , dataGoodsLevel])
     //这里加一个状态刷新的情况,要不然初始挂载只有一张幻灯片
     // console.log('4')
+
+
+    //顶部点击3条杠跳转到产品分类页面
+    const pushPage = (pUrl) => {
+        props.history.push(config.path +  pUrl);
+    }
     return (
         <div className='page'>
             {/* 顶部搜索 */}
             <div>
                 <div className={'search-header ' + (scrollBar?'red-bg':'')}>
-                    <div className='classify-icon'></div>
+                    <div className='classify-icon' onClick = {pushPage.bind(null , 'goods/classify/items')}></div>
                     <div className = 'search-wrap'>
                         <div className = 'search-icon'></div>
                         <div className = 'search-text'>请输入宝贝名称</div>

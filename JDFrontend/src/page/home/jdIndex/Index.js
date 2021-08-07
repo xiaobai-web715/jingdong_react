@@ -1,5 +1,4 @@
 import React , {lazy , Suspense , useState , useEffect} from 'react';
-import  "../../../assets/css/common/public/public.css"
 import  "../../../assets/css/common/Index/Index.css"
 import {Route , Switch} from 'react-router-dom'
 import config from '../../../assets/js/conf/config'
