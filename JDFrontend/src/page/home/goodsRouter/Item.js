@@ -2,7 +2,8 @@ import React from 'react'
 
 import '../../../assets/css/common/goods/item.css'
 
-const Item = () => {
+const Item = (props) => {
+    console.log('props' , props);
     return (
         <div className='goods-content-main'>
             <div className='goods-wrap'>

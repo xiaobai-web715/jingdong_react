@@ -20,7 +20,7 @@ const HomeIndex = (props) => {
     const[dataReco , setDataReco] = useState([]);
     //这里设置一个状态用来触发顶部搜索在特定事件变红
     const[scrollBar , setScrollBar] = useState(false);
-    console.log('scrollBar' , scrollBar)
+    // console.log('scrollBar' , scrollBar)
     // console.log('1')
 
     //监听滚动条滚动事件
@@ -122,7 +122,7 @@ const HomeIndex = (props) => {
         const fetchReco = async() =>{
            try{
                const res = await getReco(config.baseUrl + '/api/home/index/recom?token=' + config.token);
-               console.log('res' , res);
+            //    console.log('res' , res);
                setDataReco(_.get(res , ['data'] , []));
            }catch(err){
                console.log('请求为你推荐数据出错' , err)

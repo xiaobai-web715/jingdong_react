@@ -30,12 +30,15 @@
     width:100%;
     height:92.5vh;
     display:flex;
-    /* overflow:hidden; */
 }
 
 .goods-main .classify-wrap{
     width:4.3rem;
     height:100%;
+    /* 下面这3行样式就是iscorll组件添加的样式要求 */
+    overflow:hidden;
+    position:relative;
+    z-index:1;
 }
 
 .goods-main .classify-wrap .classify-item{

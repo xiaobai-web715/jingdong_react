@@ -52,5 +52,13 @@ const getReco = (pUrl , pType='GET') =>{
     });
 }
 
+const getClassify = (pUrl , pType='GET') => {
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res =>{
+        hideLoad();
+        return res.json();
+    })
+}
 
-export {getSwiper , getNav , getGoodsLevel , getReco};
+
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify};
