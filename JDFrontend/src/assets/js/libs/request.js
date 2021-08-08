@@ -52,6 +52,7 @@ const getReco = (pUrl , pType='GET') =>{
     });
 }
 
+//请求商品分类导航信息
 const getClassify = (pUrl , pType='GET') => {
     showLoad();
     return fetch(pUrl , {method : pType}).then(res =>{
@@ -60,5 +61,14 @@ const getClassify = (pUrl , pType='GET') => {
     })
 }
 
+//请求分类的商品信息(不是主页面部分)
+const getGoods = (pUrl , pType='GET') => {
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
 
-export {getSwiper , getNav , getGoodsLevel , getReco , getClassify};
+
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods};

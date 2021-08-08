@@ -4,13 +4,14 @@ import '../../../assets/css/common/goods/classify.css'
 import config from '../../../assets/js/conf/config'
 
 import { getClassify } from '../../../assets/js/libs/request'
+import { localParam } from '../../../assets/js/utils/utils'
 import IScroll from '../../../assets/js/libs/iscroll'
 import _ from 'lodash'
 
 const ItemIndex = lazy(()=>import('./Item'))
 
 const ClassfiyIndex = (props) => {
-    console.log('我的状态改变了')
+    // console.log('我的状态改变了')
     const [myIscorll , setMyIscorll] = useState(null);
     //保存数据的状态
     const [dataClassify , setDataClassify] = useState([]);
@@ -22,24 +23,20 @@ const ClassfiyIndex = (props) => {
 
     //返回上一个push页面的方法
     const GoBack = () => {
-        console.log(props.history)
+        // console.log(props.history)
         props.history.goBack();
     }
 
     //iscorll组件操作导航滑动效果
     useEffect(() => { 
-        const eventScroll = () => {
-            document.getElementById('scroll-classify').addEventListener('touchmove' , function(e){e.preventDefault();} , false);
-            const iscroll = new IScroll('#scroll-classify' , {
-                scrollX : false,
-                scrollY : true,
-                preventDefault : false,
-            });
-            setMyIscorll(iscroll);
-        }
-        eventScroll()
+        document.getElementById('scroll-classify').addEventListener('touchmove' , function(e){e.preventDefault();} , false);
+        const iscroll = new IScroll('#scroll-classify' , {
+            scrollX : false,
+            scrollY : true,
+            preventDefault : false,
+        });
+        setMyIscorll(iscroll);
     },[dataClassify])
-
     //获取导航分类数据的请求方法
     useState(() => {
         const getDataClassify = async() =>{
@@ -52,7 +49,18 @@ const ClassfiyIndex = (props) => {
                 for(let i = 0 ; i < classifyDataLen ; i++){
                     classifyData[i].bActive = false;
                 }
-                console.log('classifyData' , classifyData)
+                //这里还需要增加一个刷新匹配对应导航变红样式的效果(本来想写成函数放在外面,但是触发不了组件的刷新,所以就在修改数据状态之前去修改这个参数)
+                const cid =  _.get(localParam(props.location.search) , ['search' , 'cid'] , '492');
+                // console.log('cid' , cid)
+                if(classifyData.length > 0){
+                    for(let i = 0 ; i < classifyData.length ; i++){
+                        if(classifyData[i].cid === cid){
+                            classifyData[i].bActive = true;
+                            break;//break跳出循环
+                        }
+                    }
+                }
+                // console.log('classifyData' , classifyData)
                 setDataClassify(classifyData)
             }catch(err){
                 console.log('请求分类商品导航数据出错' , err);
@@ -68,23 +76,23 @@ const ClassfiyIndex = (props) => {
         }
         dataClassify[pIndex].bActive = true;
         //refDiv与scrollClassify在这里你就可以理解为最原始的点击事件传进来的e里面记录的你点击的DOM元素的情况
-        console.log('scrollClassify' , scrollClassify);
-        console.log('refDiv' , refDiv);
+        // console.log('scrollClassify' , scrollClassify);
+        // console.log('refDiv' , refDiv);
         //获取整个页面的高度
         let iScorllHeight = Math.round(_.get(scrollClassify , ['current' , 'offsetHeight'] , 0));
-        console.log('iScorllHeight' , iScorllHeight);
+        // console.log('iScorllHeight' , iScorllHeight);
         //获取点击位置距离页面顶部的高度
         let iTopHeight = Math.round(parseInt(_.get(refDiv , ['current' , 'offsetHeight'] , 0))*pIndex);
         //获取整个DOM元素的高度
         let DOMScorllHeight = Math.round(_.get(scrollClassify , ['current' , 'scrollHeight'] , 0))
-        console.log('iTopHeight' , iTopHeight);
+        // console.log('iTopHeight' , iTopHeight);
         //这里是做一个限制条件,当点击位置超过页面的1/3的时候才会触发自动滑动的效果
         //再增加一个限制条件就是当点击的地方距父DOM元素的底部的距离小于可视界面高度的时候就不让其触发动画效果
         let iDOMBottomHeight = DOMScorllHeight - iTopHeight;
         if(iTopHeight >= Math.round(iScorllHeight/3) && iDOMBottomHeight > iScorllHeight){
             myIscorll.scrollTo(0 , -iTopHeight , 300 , IScroll.utils.ease.elastic);
         }
-        console.log('iDOMBottomHeight' , iDOMBottomHeight);
+        // console.log('iDOMBottomHeight' , iDOMBottomHeight);
         props.history.replace(config.path + pUrl)
     }
     return (

@@ -17,7 +17,6 @@
 
 .goods-wrap .goods-items-wrap{
     width:95%;
-    height:15rem;
     background:#ffffff;
     display:flex;
     flex-wrap:wrap;
@@ -25,13 +24,13 @@
 }
 
 .goods-wrap .goods-items-wrap .items{
-   width:33.3%;
-   height:33.3%;
+   width:33%;
+   height:6.5rem;
    text-align:center;
 }
 
 .goods-wrap .goods-items-wrap .items img{
-    width:auto;
+    width:95%;
     height:77%;
     max-width:100%;
     max-height:100%;
