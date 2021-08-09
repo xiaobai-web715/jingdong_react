@@ -13,6 +13,9 @@ import '../../../assets/css/common/home/home.css'
 import '../../../assets/css/common/swiper/swiper.min.css'
 import Swiper from '../../../assets/js/libs/swiper.min.js'
 
+//搜索组件
+import Search from '../../../components/search/search'
+
 const HomeIndex = (props) => {
     const[dataSwiper ,  setDataSwiper] = useState([]);
     const[dataNav ,  setDataNav] = useState([]);
@@ -22,6 +25,9 @@ const HomeIndex = (props) => {
     const[scrollBar , setScrollBar] = useState(false);
     // console.log('scrollBar' , scrollBar)
     // console.log('1')
+
+    //添加一个点击改变搜索组件是否显示的状态
+    const[pageStyle , setPageStyle] = useState('none');
 
     //监听滚动条滚动事件
     useEffect(() => {
@@ -142,13 +148,23 @@ const HomeIndex = (props) => {
     const pushPage = (pUrl) => {
         props.history.push(config.path +  pUrl);
     }
+
+    //点击搜索框实现搜索组件显示
+    const changeSearch = () => {
+        setPageStyle('block');
+    }
+
+    //父组件写一个函数,传进子组件当中,使得子组件触发一些状态的时候可以改变父组件当中的状态
+    const getStyle = () => {
+        setPageStyle('none');
+    }
     return (
         <div className='page'>
             {/* 顶部搜索 */}
             <div>
                 <div className={'search-header ' + (scrollBar?'red-bg':'')}>
                     <div className='classify-icon' onClick = {pushPage.bind(null , 'goods/classify/items')}></div>
-                    <div className = 'search-wrap'>
+                    <div className = 'search-wrap' onClick={changeSearch.bind(null)}>
                         <div className = 'search-icon'></div>
                         <div className = 'search-text'>请输入宝贝名称</div>
                     </div>
@@ -282,6 +298,7 @@ const HomeIndex = (props) => {
                     )
                 })}
             </div>
+            <Search pageStyle={pageStyle} childStyle = {getStyle.bind(null)}></Search>
         </div>
     )
 }

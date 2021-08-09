@@ -78,3 +78,13 @@ html , body{
     text-align:center;
 }
 
+/* 修改的antd里面的样式 */
+.am-modal-body{
+    color:#000000;
+}
+
+.hide{
+    display:none;
+}
+
+

@@ -47,6 +47,7 @@ const Item = (props) => {
             scrollY : true,
             preventDefault : false,
         })
+        //这里是给iscroll绑定一个滑动监听函数,当滑动结束的时候触发图片懒加载
         scroll.on('scrollEnd' , ()=>{
             lazyImg();
         })
