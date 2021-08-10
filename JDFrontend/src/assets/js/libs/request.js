@@ -70,5 +70,13 @@ const getGoods = (pUrl , pType='GET') => {
     })
 }
 
+//请求热门搜索商品数据
+const getHotKeywords = (pUrl , pType='GET') => {
+    showLoad();
+    return fetch(pUrl , {method: pType}).then(res =>{
+        hideLoad();
+        return res.json();
+    })
+}
 
-export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods};
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords};

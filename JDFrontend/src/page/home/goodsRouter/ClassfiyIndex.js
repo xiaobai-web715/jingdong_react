@@ -95,6 +95,10 @@ const ClassfiyIndex = (props) => {
         // console.log('iDOMBottomHeight' , iDOMBottomHeight);
         props.history.replace(config.path + pUrl)
     }
+    // 从下面的打印与否我们可以知道上面的dataClassify[pIndex].bActive = true;并没有改变状态
+    // useEffect(()=>{
+    //     console.log('我刷新了哦')
+    // },[dataClassify])
     return (
         <div>
            <div className = 'classify-search-header'>

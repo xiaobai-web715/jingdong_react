@@ -30,7 +30,7 @@ const Item = (props) => {
                     // 他这里还有一个201状态的情况
                     setDataGoods([]);
                 }
-                console.log('res' , res);
+                // console.log('res' , res);
             }catch(err){
                 console.log('请求商品数据出错了' , err);
             }
