@@ -2,6 +2,8 @@ import React , {lazy , useEffect , useState , useRef} from 'react'
 import {Route , Switch} from 'react-router-dom'
 import '../../../assets/css/common/goods/classify.css'
 import config from '../../../assets/js/conf/config'
+//将搜索组件引入分类商品当中
+import Search from '../../../components/search/search'
 
 import { getClassify } from '../../../assets/js/libs/request'
 import { localParam } from '../../../assets/js/utils/utils'
@@ -99,11 +101,22 @@ const ClassfiyIndex = (props) => {
     // useEffect(()=>{
     //     console.log('我刷新了哦')
     // },[dataClassify])
+
+    //添加搜索组件所需要的的状态属性
+    const[pageStyle , setPageStyle] = useState('none');
+    //点击搜索框的时候改变上面的状态变为true
+    const changeSearch = () => {
+        setPageStyle('block');
+    }
+    //下面这个函数会传进搜索组件里面,当组件内部触发关闭事件时,会将上面的状态变成false从而使得搜索组件加载不出来
+    const getStyle = () =>{
+        setPageStyle('none');
+    }
     return (
         <div>
            <div className = 'classify-search-header'>
                <div className = 'back' onClick={GoBack.bind(null)}></div>
-               <div className = 'search'>请输入宝贝名称</div>
+               <div className = 'search' onClick={changeSearch.bind(null)}>请输入宝贝名称</div>
             </div> 
             <div className = 'goods-main'>
                 <div ref={scrollClassify} id = 'scroll-classify' className='classify-wrap'>
@@ -124,6 +137,7 @@ const ClassfiyIndex = (props) => {
                     </Switch>
                 </div>
             </div>
+            <Search pageStyle={pageStyle} childStyle = {getStyle.bind(null)}></Search>
         </div>
     )
 }

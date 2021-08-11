@@ -5,6 +5,8 @@ import {Modal} from 'antd-mobile'
 import _ from 'lodash'
 import config from '../../assets/js/conf/config'
 import { getHotKeywords } from '../../assets/js/libs/request'
+//对action的获取进行封装,这样就不用直接写在dispatch里面了
+import { setHistoryKeywords } from '../../actions/hkAction'
 
 const Search = (props) => {
     //4.获取商品信息
@@ -30,6 +32,8 @@ const Search = (props) => {
             { text: '取消', onPress: () => {}, style: 'default' },
             { text: '确认', onPress: () => {
                 setClose(true);
+                localStorage.removeItem('keywords');
+                setAKeywords([]);
             }},
         ]);
     }
@@ -63,13 +67,24 @@ const Search = (props) => {
         //虽然这里放在了localStorage里面,但是下面选购商品的时候在初始挂载的时候还是会传给仓库一个空值(因为初始值开始设置的是空值)
         // console.log('localStorage[\'keywords\']' , localStorage['keywords'])
         //更新状态,并将最新的搜索放在前面
-        setAKeywords([obtainKeyword , ...aKeywords ]);
+        //这里判断一下如果是空字符串的话就让他添加进数据集里面
+        if(Boolean(obtainKeyword)){
+            setAKeywords([obtainKeyword , ...aKeywords ]);
+        }
+        //触发搜索之后将input里面的值清空
+        setObtainKeyword('');
     }
     const dispatch = useDispatch();
     useEffect(()=>{
+        if(aKeywords.length > 0){
+            setClose(false);
+        }else{
+            setClose(true);
+        }
         // localStorage['keywords'] = JSON.stringify(aKeywords );这样组件挂载的时候会给你将里面的数据刷成空数组
         //1.选购商品信息(这里就将新的内容传给了仓库里面的action)
-        dispatch({type:'addHk' , keywords : aKeywords});
+        // dispatch({type:'addHk' , keywords : aKeywords});
+        dispatch(setHistoryKeywords(aKeywords));
         // console.log('我刷新了哦')
     },[aKeywords , dispatch])
     return (
@@ -77,7 +92,7 @@ const Search = (props) => {
             <div className='search-header-public'>
                 <div className='close' onClick={childStyle}></div>
                 <div className='search-wrap'>
-                    <input type='text' className='search' placeholder='请输入宝贝名称' onChange={(e)=>{setObtainKeyword(e.target.value)}}></input>
+                    <input type='text' value={obtainKeyword} className='search' placeholder='请输入宝贝名称' onChange={(e)=>{setObtainKeyword(e.target.value)}}></input>
                     <button type='button' className='search-btn' onClick={addHistoryKeywords.bind(null)}></button>
                 </div>
             </div>
@@ -93,7 +108,7 @@ const Search = (props) => {
                                     return (
                                         <div className='keywords' key={index}>{item}</div>
                                     )
-                                }):''
+                            }):''
                         }
                     </div>
             </div>
