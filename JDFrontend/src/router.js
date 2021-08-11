@@ -9,6 +9,7 @@ import config from './assets/js/conf/config'
 
 const JDIndex = lazy(()=>import('./page/home/jdIndex/Index'))
 const ClassfiyIndex = lazy(() => import('./page/home/goodsRouter/ClassfiyIndex'))
+const SearchIndex = lazy(() => import('./page/home/goodsRouter/search'))
 
 function RouterComponent() {
   return (
@@ -23,6 +24,7 @@ function RouterComponent() {
 
             {/* 这里也用到了模糊匹配路由的原则,这样就可以做到点击菜单,菜单栏不会消失，但是内容会根据不同的路由去加载 */}
             <Route path = {config.path + 'goods/classify'}  component={ClassfiyIndex}></Route>
+            <Route path = {config.path + 'goods/search'}  component={SearchIndex}></Route>
             <Redirect to = {config.path +'jd/home'}></Redirect>
           </Switch>
         </Suspense>
