@@ -28,7 +28,7 @@ const Search = (props) => {
     //这里也要修改相应的初始值,使得刷新后的再次搜索是在上一次的历史数据上做逻辑处理,同样也是防止初次挂载的时候执行useEffec钩子使得传进去数据同样是空数组,同样造成刷新页面之后历史数据无法保存的现象(这只是一个现象,历史数据其实成功保存在了localStorage里面,只是受到传入的默认空值的影响,而达不到想要其显示的效果)
     // const[aKeywords , setAKeywords] = useState([]);
     //这是目前的解决思路,在最初的状态localStorage.keywords没被创建时用的是keywords,也就是里面默认localStorage.keywords是null或undefined是的空数组[]
-    const[aKeywords , setAKeywords] = useState(JSON.parse(localStorage.keywords) || keywords);
+    const[aKeywords , setAKeywords] = useState(localStorage.keywords ? JSON.parse(localStorage.keywords) : keywords);
     // console.log('aKeywords' , aKeywords);
     const clearHistory  = () => {
         Modal.alert('', '确认要删除吗?', [
