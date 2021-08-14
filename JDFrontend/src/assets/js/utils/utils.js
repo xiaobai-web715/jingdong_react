@@ -9,7 +9,7 @@ function lazyImg(){
     })
 }
 
-//url?后面部分的方法
+//获取url?后面部分的方法
 function localParam(search , hash){
     // search如果是传值的话就用传来的值计算，如果没有传值，就默认window.location.search也就是url后面的？后面的那部分
     search = search || window.location.search

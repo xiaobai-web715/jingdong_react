@@ -96,7 +96,7 @@ const Search = (props) => {
         // console.log('我刷新了哦')
     },[aKeywords , dispatch])
 
-    //点击搜索历史触发跳转到商品搜索信息的页面
+    //点击搜索触发跳转到商品搜索信息的页面
     const goPage = (url)=>{
         // console.log('url' , url)
         // console.log('config.baseUrl + url' , config.baseUrl + url)

@@ -1,4 +1,5 @@
-let prodUrl = 'http://vueshop.glbuys.com';
+// let prodUrl = 'http://vueshop.glbuys.com';
+let prodUrl = '//vueshop.glbuys.com';//修改成这样接口可以自动识别http还是https
 // 生产者环境
 
 // let devUrl = 'http://vueshop.glbuys.com';

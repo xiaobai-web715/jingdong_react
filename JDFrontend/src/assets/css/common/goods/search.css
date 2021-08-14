@@ -86,7 +86,7 @@
     font-size:0.64rem;
 }
 
-.search-page .search-top .order-main .order-item .active{
+.search-page .search-top .order-main .order-item.active .order-text{
     color:#FDA208;
 }
 
@@ -100,9 +100,9 @@
     margin-left:0.2rem;
 }
 
-.search-page .search-top .order-main .order-item .up{
-    width:0.8rem;
-    height:0.8rem;
+.search-page .search-top .order-main .order-item.active .order-icon{
+    width:0.7rem;
+    height:0.7rem;
     background-image:url('../../../images/home/goods/up.png');
     background-size:100%;
     background-repeat:no-repeat;
@@ -126,7 +126,8 @@
     border-bottom:1px solid #EFEFEF;
     font-size:0.56rem;
     line-height:1.6rem;
-    padding-left:0.4rem;
+    padding-left:0.7rem;
+    background-color:#FFFFFF;
 }
 
 .search-page .search-top .order-main .order-item .order-menu li.active{
