@@ -35,6 +35,7 @@ const Search = (props) => {
     //这是目前的解决思路,在最初的状态localStorage.keywords没被创建时用的是keywords,也就是里面默认localStorage.keywords是null或undefined是的空数组[]
     const[aKeywords , setAKeywords] = useState(localStorage.keywords ? JSON.parse(localStorage.keywords) : keywords);
     // console.log('aKeywords' , aKeywords);
+    const dispatch = useDispatch();
     const clearHistory  = () => {
         Modal.alert('', '确认要删除吗?', [
             { text: '取消', onPress: () => {}, style: 'default' },
@@ -42,6 +43,8 @@ const Search = (props) => {
                 setClose(true);
                 localStorage.removeItem('keywords');
                 setAKeywords([]);
+                //这里在添加一个dispatch让其更新redux里面的数据变成空,这样再次加载这个组件的时候从redux里面拿到的数据流keywords就是空的了
+                dispatch(setHistoryKeywords([]));
             }},
         ]);
     }
@@ -87,10 +90,9 @@ const Search = (props) => {
         }else{
             Toast.info('请输入宝贝名称' , 2)
         }
-        //触发搜索之后将obtainKeyword里面的值变成空
-        // setObtainKeyword('');
+        //触发搜索之后将obtainKeyword里面的值变成空(因为只要搜索后obtainKeyword里面就会有值,不清空的话input就直接显示value里面的值了,而不是显示placeholder里面的值了)
+        setObtainKeyword('');
     }
-    const dispatch = useDispatch();
     useEffect(()=>{
         if(aKeywords.length > 0){
             setClose(false);
@@ -120,7 +122,7 @@ const Search = (props) => {
             <div className='search-header-public'>
                 <div className='close' onClick={childStyle}></div>
                 <div className='search-wrap'>
-                {/* 所以这里将传进来的 sendKeyWords写进了placeholder里了*/}
+                {/* 所以这里将传进来的 sendKeyWords写进了placeholder里了,csdn的输入框应该是采用的这个方式*/}
                     <input type='text'  value={obtainKeyword } className='search' placeholder={sendKeyWords?sendKeyWords:'请输入宝贝名称'} onChange={(e)=>{setObtainKeyword(e.target.value)}}></input>
                     {/* 这里也相应的做了下改变 ,默认obtainKeyword为''的时候点击搜索事件的item是之前搜索的sendKeyWords*/}
                     <button type='button' className='search-btn' onClick={addHistoryKeywords.bind(null , obtainKeyword?obtainKeyword:sendKeyWords)}></button>

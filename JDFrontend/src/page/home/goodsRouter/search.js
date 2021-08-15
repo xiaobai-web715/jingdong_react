@@ -36,7 +36,28 @@ const Search = (props) => {
         {title : '价格从低到高' , type : 'up' , checked : false},
     ])
 
-
+    //右侧导航分类所需要的属性状态管理
+    const [aClassify , setAClassify] = useState({
+        checked:true,
+        items:[
+            {cid:1,title:'潮流女装' , checked:false},
+            {cid:2,title:'品牌男装' , checked:false},
+            {cid:3,title:'数码科技' , checked:false},
+        ]
+    })
+    const [aPrice , setAPrice] = useState({
+        checked:true,
+        items:[
+            {price1:1,price2:50 , checked:false},
+            {price1:51,price2:99 , checked:false},
+            {price1:100,price2:300 , checked:false},
+            {price1:301,price2:1000 , checked:false},
+            {price1:1001,price2:4000 , checked:false},
+            {price1:4001,price2:9999, checked:false},
+        ]
+    })
+        //定义一个接收价格范围的状态好传给价格区间的input上
+    const [fPrice , setFPrice] = useState({fPrice1:0 , fPrice2:0})
     //当点击筛选出现操作面板时,禁止滚动条的滑动效果
     //当点击筛选的时候触发操作面板动画效果
     const showScreen = () => {
@@ -200,13 +221,65 @@ const Search = (props) => {
 
     //这个函数会传进search公共组件里面,当被调用在公共组件被调用的时候会从里面传过来一个val值，然后替修改params中的keywords并更新状态刷请求数据
     const getChildKeywords = (item , url) =>{
-        console.log('item' , item)
+        // console.log('item' , item)
         // 这里的这个val值就是search公共组件里面路由跳转的时候的item值，也就是搜索的商品名称
         props.history.replace(config.path + url)
         let copyParams = params;
         copyParams.keywords = item
         setParams(Object.assign({} , copyParams))
         setPageStyle('none');
+    }
+    //点击分类隐藏或显示
+    const handleClassify = () =>{
+        let copyAClassify = aClassify;
+        if(copyAClassify.checked === true){
+            copyAClassify.checked = false;
+            setAClassify(Object.assign({} , copyAClassify)); 
+        }else{
+            copyAClassify.checked = true;
+            setAClassify(Object.assign({} , copyAClassify)); 
+        }
+    }
+    //选择分类
+    const checkedClassify = (index) => {
+        let copyAClassify = aClassify;
+        if(copyAClassify.items.length>0){
+            for(let i = 0 ; i<copyAClassify.items.length;i++){
+                copyAClassify.items[i].checked= false;
+            }
+        }
+        copyAClassify.items[index].checked = true;
+        setAClassify(Object.assign({} , copyAClassify))
+    }
+     //点击价格范围隐藏或显示
+     const handlePrice = () =>{
+        let copyAPrice = aPrice;
+        if(copyAPrice.checked === true){
+            copyAPrice.checked = false;
+            setAPrice(Object.assign({} , copyAPrice)); 
+        }else{
+            copyAPrice.checked = true;
+            setAPrice(Object.assign({} , copyAPrice)); 
+        }
+    }
+    //阻止冒泡事件(点击价格区间的输入框的时候也会使整个区块隐藏，这就是因为点击隐藏事件冒泡到了input里面)
+    const preventBubble = (e) =>{
+        e.stopPropagation();
+    }
+    //选择价格范围
+    const checkedPrice =(index , price1 , price2) => {
+        let copyAPrice = aPrice,
+            copyFPrice = fPrice;
+        if(copyAPrice.items.length>0){
+            for(let i = 0 ; i<copyAPrice.items.length;i++){
+                copyAPrice.items[i].checked= false;
+            }
+        }
+        copyAPrice.items[index].checked = true;
+        copyFPrice.fPrice1 = copyAPrice.items[index].price1;
+        copyFPrice.fPrice2 = copyAPrice.items[index].price2;
+        setAPrice(Object.assign({} ,copyAPrice))
+        setFPrice(Object.assign({} ,copyFPrice))
     }
     return (
         <div className='search-page'>
@@ -265,36 +338,40 @@ const Search = (props) => {
             <div id='screen' className={'screen ' + screenMove}>
                 <div>
                     <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
+                        <div className='attr-title-wrap' onClick={handleClassify.bind(null)}>
                             <div className='attr-name'>分类</div>
-                            <div className='attr-icon up'></div>
+                            <div className={aClassify.checked?'attr-icon':'attr-icon up'}></div>
                         </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>潮流女装</div>
-                            <div className='item'>潮流女装</div>
-                            <div className='item'>潮流女装</div>
-                            <div className='item'>潮流女装</div>
-                            <div className='item'>潮流女装</div>
+                        <div className={aClassify.checked?'item-wrap':'item-wrap height-hide'}>
+                            {
+                                aClassify.items.length>0?
+                                aClassify.items.map((item,index)=>{
+                                    return(
+                                        <div className={item.checked?'item active':'item'} key={index} onClick={checkedClassify.bind(null , index)}>{item.title}</div>
+                                    )
+                                }):''
+                            }
                         </div>
                     </div>
                     <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
                     <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
+                        <div className='attr-title-wrap' onClick={handlePrice.bind(null)}>
                             <div className='attr-name'>价格区间</div>
                             <div className='price-wrap'>
-                                <div className='price-input'><input type='tel' placeholder='最低价'></input></div>
+                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice1 === 0?'':fPrice.fPrice1} type='tel' placeholder='最低价'></input></div>
                                 <div className='price-line'></div>
-                                <div className='price-input'><input type='tel' placeholder='最高价'></input></div>
+                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice2 === 0?'':fPrice.fPrice2} type='tel' placeholder='最高价'></input></div>
                             </div>
                             <div className='attr-icon up'></div>
                         </div>
-                        <div className='item-wrap'>
-                            <div className='item'>1-50</div>
-                            <div className='item'>51-99</div>
-                            <div className='item'>100-300</div>
-                            <div className='item'>301-1000</div>
-                            <div className='item'>1001-4000</div>
-                            <div className='item'>4001-9999</div>
+                        <div className={aPrice.checked?'item-wrap':'item-wrap height-hide'}>
+                            {
+                                aPrice.items.map((item , index) => {
+                                   return(
+                                    <div className={item.checked?'item active':'item'} key={index} onClick={checkedPrice.bind(null , index , item.price1 , item.price2)}>{item.price1}-{item.price2}</div>
+                                   ) 
+                                })
+                            }
                         </div>
                     </div>
                     <div style={{width:'100%' , height:'0.6rem' , backgroundColor:'#EFEFEF'}}></div>
