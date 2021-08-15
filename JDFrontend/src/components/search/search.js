@@ -1,7 +1,7 @@
 import React , {useState , useEffect} from 'react'
 import {useDispatch , useSelector} from 'react-redux'
 import  '../search/search.css'
-import {Modal} from 'antd-mobile'
+import {Modal , Toast} from 'antd-mobile'
 import _ from 'lodash'
 import config from '../../assets/js/conf/config'
 import { getHotKeywords } from '../../assets/js/libs/request'
@@ -11,10 +11,11 @@ import { setHistoryKeywords } from '../../actions/hkAction'
 import { withRouter } from 'react-router'
 
 const Search = (props) => {
+    // console.log('props' , props)
     //4.获取商品信息
     const {keywords} = useSelector((state) => state.searchRedux);
     // console.log('keywords' , keywords)
-    const{pageStyle , childStyle} = props;
+    const{pageStyle , childStyle , isLocal , childKeywords , sendKeyWords} = props;
     const[datasHotKeywords , setDatasHotKeywords] = useState([]);
     // console.log('peops' , props)
     // console.log('pageStyle' , pageStyle);
@@ -24,6 +25,10 @@ const Search = (props) => {
     const[close , setClose] = useState(false)
     //获取搜索数据
     const[obtainKeyword , setObtainKeyword] = useState('');
+    //这里这样修改受控组件的value值会报错(暂时还想不到好的办法去如何将传过来的sendKeyWords作为初始值传给input)
+    // useEffect(() => {
+    //     setObtainKeyword(props.sendKeyWords);
+    // },[props])
     //存储搜索数据
     //这里也要修改相应的初始值,使得刷新后的再次搜索是在上一次的历史数据上做逻辑处理,同样也是防止初次挂载的时候执行useEffec钩子使得传进去数据同样是空数组,同样造成刷新页面之后历史数据无法保存的现象(这只是一个现象,历史数据其实成功保存在了localStorage里面,只是受到传入的默认空值的影响,而达不到想要其显示的效果)
     // const[aKeywords , setAKeywords] = useState([]);
@@ -56,31 +61,34 @@ const Search = (props) => {
     },[])
 
     //点击搜索按钮触发事件(onChange会触发改变obtainKeyword状态的效果,当点击的时候就是最后一次触发也就是最新的obtainKeyword,同样也是我们想要的数据)
-    const addHistoryKeywords = ()=>{
-        // console.log('obtainKeyword' , obtainKeyword)
+    const addHistoryKeywords = (item)=>{
+        console.log('item' , item)
         //去掉重复的搜索
         for(let i = 0 ; i<aKeywords.length ; i++){
-            if(aKeywords[i] === obtainKeyword){
+            if(aKeywords[i] === item){
                 aKeywords.splice(i , 1);
             }
         }
         //更新状态,并将最新的搜索放在前面
         //这里判断一下如果是空字符串的话就让他添加进数据集里面
-        if(Boolean(obtainKeyword)){
+        // item === ''这里是为了测试不搜索出现全部数据的情况
+        if(Boolean(item)){
             //这里使用localStorage存储数据的功能配合redux使用(解决redux无法存储数据的能力,但要注意的是localStorage只能存储字符串)
             //!!!这里要记得不要放在useEffect里面,要不组件挂载的时候照样给你变成空
-            localStorage['keywords'] = JSON.stringify([obtainKeyword , ...aKeywords ]);
+            localStorage['keywords'] = JSON.stringify([item , ...aKeywords ]);
             //虽然这里放在了localStorage里面,但是下面选购商品的时候在初始挂载的时候还是会传给仓库一个空值(因为初始值开始设置的是空值)
-            // console.log('localStorage[\'keywords\']' , localStorage['keywords'])
-            setAKeywords([obtainKeyword , ...aKeywords ]);
+            setAKeywords([item, ...aKeywords ]);
             // localStorage['keywords'] = JSON.stringify(aKeywords );这样组件挂载的时候会给你将里面的数据刷成空数组
 
+            //调用路由切换函数切换路由（这个路由会通过模糊匹配匹配到goodsRouter里面的search.js文件）
+            goPage('goods/search/?keywords=' + item , item)
             //这里加上一个url跳转时返回之后搜索历史不显示这次的记录,但是localStorage里面有，刷新之后就能显示出来
-            goPage('goods/search/?keywords=' + obtainKeyword)
             //目前按我自己的代码来说,问题的症结在于组件挂载时的初始值,因为只有该组件挂载与卸载,并不会触发redux里面赋予默认初始值是localStorage里面值的操作（也就是setAKeywords([obtainKeyword , ...aKeywords ])虽然我改变了这个状态,但rnm的组件卸载再挂载时的被keywords这个玩意给还原了,所以就产生了你搜索之后返回时搜索历史没有发生变化）
+        }else{
+            Toast.info('请输入宝贝名称' , 2)
         }
-        //触发搜索之后将input里面的值清空
-        setObtainKeyword('');
+        //触发搜索之后将obtainKeyword里面的值变成空
+        // setObtainKeyword('');
     }
     const dispatch = useDispatch();
     useEffect(()=>{
@@ -92,23 +100,30 @@ const Search = (props) => {
         //1.选购商品信息(这里就将新的内容传给了仓库里面的action)
         //这里也不能写进addHistoryKeywords这个点击事件里面,因为那样传的值是状态刷新之前的值
         dispatch(setHistoryKeywords(aKeywords));
-        // dispatch(setHistoryKeywords(aKeywords));
-        // console.log('我刷新了哦')
     },[aKeywords , dispatch])
 
     //点击搜索触发跳转到商品搜索信息的页面
-    const goPage = (url)=>{
+    //这里就规定了我只有在点击历史搜索、热门搜索和搜索框搜索的时候才会触发这个函数
+    const goPage = (url , item)=>{
         // console.log('url' , url)
-        // console.log('config.baseUrl + url' , config.baseUrl + url)
-        props.history.push(config.path + url);
+        //这里规定了我只有在路由组件goodsRouter里面的search.js文件中调用这个公共search组件时才会触发childKeywords()这个函数,然后childKeywords()函数中会修改一个状态使得这个组件的display变成none
+        if(isLocal === '1'){
+            // childKeywords这个函数时父组件里面传过来的
+            childKeywords(item , url);
+            // props.history.push(config.path + url);
+        }else{
+            props.history.push(config.path + url);
+        }
     }
     return (
         <div className='page-public' style={{display: pageStyle}}>
             <div className='search-header-public'>
                 <div className='close' onClick={childStyle}></div>
                 <div className='search-wrap'>
-                    <input type='text' value={obtainKeyword} className='search' placeholder='请输入宝贝名称' onChange={(e)=>{setObtainKeyword(e.target.value)}}></input>
-                    <button type='button' className='search-btn' onClick={addHistoryKeywords.bind(null)}></button>
+                {/* 所以这里将传进来的 sendKeyWords写进了placeholder里了*/}
+                    <input type='text'  value={obtainKeyword } className='search' placeholder={sendKeyWords?sendKeyWords:'请输入宝贝名称'} onChange={(e)=>{setObtainKeyword(e.target.value)}}></input>
+                    {/* 这里也相应的做了下改变 ,默认obtainKeyword为''的时候点击搜索事件的item是之前搜索的sendKeyWords*/}
+                    <button type='button' className='search-btn' onClick={addHistoryKeywords.bind(null , obtainKeyword?obtainKeyword:sendKeyWords)}></button>
                 </div>
             </div>
             <div className={close ?'search-main hide' :'search-main'}>
@@ -121,7 +136,8 @@ const Search = (props) => {
                             aKeywords !=null?
                             aKeywords.map((item , index) => {
                                     return (
-                                        <div className='keywords' key={index} onClick={goPage.bind(null , 'goods/search?keywords='+item)}>{item}</div>
+                                        // addHistoryKeywords这里的修改是为了能够向搜索历史里面添加记录
+                                        <div className='keywords' key={index} onClick={addHistoryKeywords.bind(null , item)}>{item}</div>
                                     )
                             }):''
                         }
@@ -135,16 +151,10 @@ const Search = (props) => {
                         {
                             datasHotKeywords.map((item , index)=>{
                                 return(
-                                    <div className='keywords' key={index} onClick={goPage.bind(null , 'goods/search?keywords='+item.title)}>{item.title}</div>
+                                    <div className='keywords' key={index} onClick={addHistoryKeywords.bind(null , item.title)}>{item.title}</div>
                                 )
                             })
                         }
-                        {/* <div className='keywords'>大码女装</div>
-                        <div className='keywords'>大码女装</div>
-                        <div className='keywords'>大码女装</div>
-                        <div className='keywords'>大码女装</div>
-                        <div className='keywords'>大码女装</div>
-                        <div className='keywords'>大码女装</div> */}
                     </div>
             </div>
         </div>

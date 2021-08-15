@@ -119,18 +119,24 @@ const Search = (props) => {
         // const keywords = decodeURIComponent(localParam(props.location.search).search.keywords);
         // setParams(params => {return {...params , keywords}});
 
-        //下面是第一种成功的办法,但是会有一个警告就是useEffect依赖于params
+        // 下面是第一种成功的办法,但是会有一个警告就是useEffect依赖于params(这种也不算是触发状态更新)
         // let copyParams_copy = () => {
         //     params.keywords = decodeURIComponent(localParam(props.location.search).search.keywords);
         //     return params;
         // };
         // setParams(copyParams_copy())
         
-        // 下面这个解决了依赖问题,并且也是成功的
-        setParams((params) => {
+        // 下面这个解决了依赖问题,并且也是成功的(不过这样并没有算是更新了状态)
+        // setParams((params) => {
+        //     params.keywords = decodeURIComponent(localParam(props.location.search).search.keywords);
+        //     return params;
+        // })
+
+        let copyParams_copy = (params) => {
             params.keywords = decodeURIComponent(localParam(props.location.search).search.keywords);
             return params;
-        })
+        };
+        setParams(Object.assign({} , copyParams_copy(params)))
     } , [props])
     //对url进行分装目的就是为了能够去修改传入参数
     const getParams = (params)=>{
@@ -139,6 +145,7 @@ const Search = (props) => {
     }
     //获取商品数据的方法
     useEffect(()=> {
+        // console.log('我被触发了')
         // console.log('params' , params)
         const param = getParams(params);
         const dataPage = async() => {
@@ -149,6 +156,8 @@ const Search = (props) => {
                 if(res.code === 200){
                     setData(_.get(res , ['data'] , []));
                     setMaxPage(_.get(res , ['pageinfo' , 'pagenum'] , 0));
+                }else{
+                    setData([]);
                 }
             }catch(err){
                 console.log('请求商品数据出错' , err);
@@ -173,6 +182,8 @@ const Search = (props) => {
                     //用扩展运算符进行浅拷贝来修改状态(写成这样的箭头函数形式的,并且返回一个我们需要的值,不会触发React Hook useEffect has missing dependencies:data这个警告,这里如果添加一个data依赖的话,会出现问题)
                     if(res.code === 200){
                         setData(data => [...data ,  ...(_.get(res , ['data'] , []))]);
+                    }else{
+                        setData([]); 
                     }
                 }catch(err){
                     console.log('请求商品数据出错' , err);
@@ -186,6 +197,17 @@ const Search = (props) => {
         // console.log('data' , data)
         lazyImg();
     } , [data])
+
+    //这个函数会传进search公共组件里面,当被调用在公共组件被调用的时候会从里面传过来一个val值，然后替修改params中的keywords并更新状态刷请求数据
+    const getChildKeywords = (item , url) =>{
+        console.log('item' , item)
+        // 这里的这个val值就是search公共组件里面路由跳转的时候的item值，也就是搜索的商品名称
+        props.history.replace(config.path + url)
+        let copyParams = params;
+        copyParams.keywords = item
+        setParams(Object.assign({} , copyParams))
+        setPageStyle('none');
+    }
     return (
         <div className='search-page'>
             <div className='search-top'>
@@ -394,7 +416,8 @@ const Search = (props) => {
                     <div className='item sure'>确定</div>
                 </div>
             </div>
-            <SearchIndex pageStyle={pageStyle} childStyle = {getStyle.bind(null)}></SearchIndex>
+            {/* sendKeyWords={params.keywords}传值的目的是在这个页面点击搜索框的时候出来的搜索框上面就是当前搜索的内容 */}
+            <SearchIndex pageStyle={pageStyle} childStyle = {getStyle.bind(null)} isLocal={'1'} childKeywords = {getChildKeywords.bind(null)} sendKeyWords={params.keywords}></SearchIndex>
         </div>
     )
 }
