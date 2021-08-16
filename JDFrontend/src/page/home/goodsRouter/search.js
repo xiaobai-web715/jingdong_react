@@ -4,7 +4,7 @@ import React , {useState , useEffect} from 'react'
 import '../../../assets/css/common/goods/search.css'
 import IScroll from '../../../assets/js/libs/iscroll'
 import config from '../../../assets/js/conf/config'
-import { getData } from '../../../assets/js/libs/request'
+import { getData , getClassifyAttr , getAttr} from '../../../assets/js/libs/request'
 //导入写的搜索公共组件
 import SearchIndex from '../../../components/search/search'
 //导入图片懒加载的方法
@@ -25,10 +25,12 @@ const Search = (props) => {
     const [data , setData] = useState([])
     //滑动获取数据所需要的状态
     const [maxPage , setMaxPage] = useState(0)
-    //获取不同商品所需要的数据状态
+    //获取不同商品所需要的数据状态(初始状态)
     // keywords : decodeURIComponent(localParam(props.location.search).search.keywords)}这里折磨写是无奈之举,如果初始值设置成空的
     // const [params , setParams] = useState({otopye:'all' , keywords : decodeURIComponent(localParam(props.location.search).search.keywords)})
-    const [params , setParams] = useState({otopye:'all' , keywords : ''})
+    const [params , setParams] = useState({otopye:'all' , keywords : '' , cid:'' , price1:'',price2:''})
+    //拷贝状态用于点击确定的时候触发params状态变化去刷新数据(这里之所以加个拷贝状态就是因为我给自己挖了一个坑,要是直接修改params状态不用点击确实就直接给刷新数据了)
+    const [copyParams , setCopyParams] = useState({otopye:'all'})
     //这里添加一个状态来管理综合、价格从高到低和价格从低到高3个状态(视频中讲解这是数据驱动模式)
     const [aPriceOrder , setAPriceOrder] = useState([
         {title : '综合' , type : 'all' , checked : true},
@@ -39,11 +41,7 @@ const Search = (props) => {
     //右侧导航分类所需要的属性状态管理
     const [aClassify , setAClassify] = useState({
         checked:true,
-        items:[
-            {cid:1,title:'潮流女装' , checked:false},
-            {cid:2,title:'品牌男装' , checked:false},
-            {cid:3,title:'数码科技' , checked:false},
-        ]
+        items:[]
     })
     const [aPrice , setAPrice] = useState({
         checked:true,
@@ -58,6 +56,10 @@ const Search = (props) => {
     })
         //定义一个接收价格范围的状态好传给价格区间的input上
     const [fPrice , setFPrice] = useState({fPrice1:0 , fPrice2:0})
+    //每种商品商品的特定属性选择集合
+    const [aAttr , setAAttr] = useState([])
+    //共多少件状态
+    const [itemTotal , setItemTotal] = useState(0)
     //当点击筛选出现操作面板时,禁止滚动条的滑动效果
     //当点击筛选的时候触发操作面板动画效果
     const showScreen = () => {
@@ -79,12 +81,14 @@ const Search = (props) => {
     }
     //IScroll使用
     useEffect(() => {
+        // console.log('aAttr' , aAttr)
         new IScroll('#screen' ,{
             scrollX : false,
             scrollY : true,
             preventDefault : false,
         });
-    } , [])
+        //这里需要异步刷新一下适应新的数据长度
+    } , [aClassify , aAttr])
     //点击返回按钮触发返回
     const goBack = () => {
         props.history.goBack();
@@ -161,22 +165,23 @@ const Search = (props) => {
     } , [props])
     //对url进行分装目的就是为了能够去修改传入参数
     const getParams = (params)=>{
-        const sParams = 'kwords='+params.keywords+'&param=&price1=&price2=&otype='+params.otopye+'&cid=&';
+        const sParams = 'kwords='+params.keywords+'&param=&price1='+params.price1+'&price2='+params.price2+'&otype='+params.otopye+'&cid='+params.cid+'&';
         return sParams;
     }
     //获取商品数据的方法
     useEffect(()=> {
         // console.log('我被触发了')
-        // console.log('params' , params)
         const param = getParams(params);
+        console.log('params' , config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token)
         const dataPage = async() => {
             try{
                 //第一部分是直接请求第一页的商品数据,并获取后面所需要的的最大页数
                 const res = await getData(config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token);
-                // console.log('res',res)
+                console.log('res',res)
                 if(res.code === 200){
                     setData(_.get(res , ['data'] , []));
                     setMaxPage(_.get(res , ['pageinfo' , 'pagenum'] , 0));
+                    setItemTotal(_.get(res,['pageinfo' , 'total'] , 0));
                 }else{
                     setData([]);
                 }
@@ -242,14 +247,26 @@ const Search = (props) => {
     }
     //选择分类
     const checkedClassify = (index) => {
+        let copyCopyParams = copyParams; 
         let copyAClassify = aClassify;
         if(copyAClassify.items.length>0){
             for(let i = 0 ; i<copyAClassify.items.length;i++){
-                copyAClassify.items[i].checked= false;
+                if(i !== index){
+                    copyAClassify.items[i].checked= false;
+                }
             }
         }
-        copyAClassify.items[index].checked = true;
-        setAClassify(Object.assign({} , copyAClassify))
+        if(copyAClassify.items[index].checked){
+            copyAClassify.items[index].checked = false;
+            copyCopyParams.cid = ''
+        }else{
+            copyAClassify.items[index].checked = true;
+            copyCopyParams.cid = copyAClassify.items[index].cid
+            // copyParams.keywords = copyAClassify.items[index].title
+        }
+        // console.log('copyParams' , copyParams)
+        setAClassify(Object.assign({} , copyAClassify));
+        setCopyParams(Object.assign({} , copyCopyParams))
     }
      //点击价格范围隐藏或显示
      const handlePrice = () =>{
@@ -268,19 +285,110 @@ const Search = (props) => {
     }
     //选择价格范围
     const checkedPrice =(index , price1 , price2) => {
+        let copyCopyParams = copyParams;
         let copyAPrice = aPrice,
             copyFPrice = fPrice;
         if(copyAPrice.items.length>0){
             for(let i = 0 ; i<copyAPrice.items.length;i++){
-                copyAPrice.items[i].checked= false;
+                if(i !== index){
+                    copyAPrice.items[i].checked= false;
+                }
             }
         }
-        copyAPrice.items[index].checked = true;
-        copyFPrice.fPrice1 = copyAPrice.items[index].price1;
-        copyFPrice.fPrice2 = copyAPrice.items[index].price2;
+        if(copyAPrice.items[index].checked){
+            copyAPrice.items[index].checked = false;
+            copyFPrice.fPrice1 = '';
+            copyFPrice.fPrice2 = '';
+            copyCopyParams.price1 = '';
+            copyCopyParams.price2 = '';
+        }else{
+            copyAPrice.items[index].checked = true;
+            copyFPrice.fPrice1 = price1;
+            copyFPrice.fPrice2 = price2;
+            copyCopyParams.price1 = price1;
+            copyCopyParams.price2 = price2;
+        }
         setAPrice(Object.assign({} ,copyAPrice))
         setFPrice(Object.assign({} ,copyFPrice))
+        setCopyParams(Object.assign({}, copyCopyParams))
     }
+    //显示隐藏每种商品所对应的属性
+    const handleAttr = (index) => {
+        let copyAAttr = aAttr;
+        if(copyAAttr[index].checked){
+            copyAAttr[index].checked = false;
+        }else{
+            copyAAttr[index].checked = true;
+        }
+        setAAttr([...copyAAttr])
+    }
+    //选择属性的值(多选部分)
+    const checkedParams = (attrIndex , paramIndex) => {
+        let copyAAttr = aAttr;
+        if(copyAAttr[attrIndex].param[paramIndex].checked){
+            copyAAttr[attrIndex].param[paramIndex].checked = false;
+        }else{
+            copyAAttr[attrIndex].param[paramIndex].checked = true;
+        }
+        setAAttr([...copyAAttr])
+    }
+
+     //获取分类数据
+     useEffect(() => {
+        const dataClassify = async() => {
+            try{
+                const res = await getClassifyAttr(config.baseUrl + '/api/home/category/menu?token=' + config.token)
+                // console.log('res' , res)
+                if(res.code === 200){
+                    let copyAClassify = aClassify;
+                    let data = _.get(res , ['data'] , [])
+                    for(let i = 0 ; i < data.length ; i++){
+                        data[i].checked = false;
+                    }
+                    copyAClassify.items = data;
+                    // console.log('data' , data)
+                    setAClassify(Object.assign({} , copyAClassify))
+                }
+            }catch(err){
+                console.log('请求分类属性数据出错' , err)
+            }
+        }
+        dataClassify();
+    },[])
+
+    //获取特定商品的属性数据
+    useEffect(() => {
+        const dataAttr = async() =>{
+            try{
+                const res = await getAttr(config.baseUrl + '/api/home/goods/param?kwords='+params.keywords+'&token=' + config.token);
+                // console.log('res' , res)
+                if(res.code === 200){
+                    let data = _.get(res , ['data'] , [])
+                    for(let i = 0 ; i < data.length ; i++){
+                        data[i].checked = false;
+                        for(let t = 0 ; t < data[i].param.length ; t++){
+                            data[i].param[t].checked = false;
+                        }
+                    }
+                    // console.log('data' , data)
+                    setAAttr([...data])
+                }
+            }catch(err){
+                console.log('请求属性数据出错' , err);
+            }
+        }
+        dataAttr()
+    },[params])
+    //点击确定按钮搜索
+    const goSearch = () => {
+        // console.log('copyParams' , copyParams)
+        setParams({...params , ...copyParams});
+        //触发控制面板退出
+        hideScreen();
+    }
+    useEffect(()=>{
+        console.log('params',params)
+    },[params])
     return (
         <div className='search-page'>
             <div className='search-top'>
@@ -318,6 +426,7 @@ const Search = (props) => {
             {/* 产品列表 */}
             <div className='goods-main2'>
                 {
+                    data.length >0?
                     data.map((item , index) => {
                         return(
                             <div className='goods-list2' key={index}>
@@ -329,7 +438,7 @@ const Search = (props) => {
                                 </div>
                             </div>
                         )
-                    })
+                    }):<div className='null-item'>没有相关商品</div>
                 }
             </div>
             {/* 点击筛选产生的背景色,并通过事件监听禁用滑动效果 */}
@@ -358,11 +467,11 @@ const Search = (props) => {
                         <div className='attr-title-wrap' onClick={handlePrice.bind(null)}>
                             <div className='attr-name'>价格区间</div>
                             <div className='price-wrap'>
-                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice1 === 0?'':fPrice.fPrice1} type='tel' placeholder='最低价'></input></div>
+                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice1 === 0?'':fPrice.fPrice1} type='tel' placeholder='最低价' onChange={(e)=> {setFPrice({...fPrice , fPrice1 : e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')})}}></input></div>
                                 <div className='price-line'></div>
-                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice2 === 0?'':fPrice.fPrice2} type='tel' placeholder='最高价'></input></div>
+                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice2 === 0?'':fPrice.fPrice2} type='tel' placeholder='最高价' onChange={(e)=> {setFPrice({...fPrice , fPrice2 : e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')})}}></input></div>
                             </div>
-                            <div className='attr-icon up'></div>
+                            <div className={aPrice.checked?'attr-icon':'attr-icon up'}></div>
                         </div>
                         <div className={aPrice.checked?'item-wrap':'item-wrap height-hide'}>
                             {
@@ -375,122 +484,39 @@ const Search = (props) => {
                         </div>
                     </div>
                     <div style={{width:'100%' , height:'0.6rem' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>品牌</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>李宁</div>
-                            <div className='item'>阿迪达斯</div>
-                            <div className='item'>耐克</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
-                    <div className='attr-wrap'>
-                        <div className='attr-title-wrap'>
-                            <div className='attr-name'>衣长</div>
-                            <div className='attr-icon up'></div>
-                        </div>
-                        <div className='item-wrap'>
-                            <div className='item active'>长款</div>
-                            <div className='item'>中长款</div>
-                            <div className='item'>短款</div>
-                        </div>
-                    </div>
-                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
+                    {
+                        aAttr.length > 0 ?
+                        aAttr.map((item , attrIndex) => {
+                            return(
+                                <React.Fragment key={attrIndex}>
+                                    <div className='attr-wrap'>
+                                        <div className='attr-title-wrap' onClick={handleAttr.bind(null , attrIndex)}>
+                                            <div className='attr-name'>{item.title}</div>
+                                            <div className={item.checked?'attr-icon up':'attr-icon'}></div>
+                                        </div>
+                                        <div className={item.checked?'item-wrap height-hide': 'item-wrap'}>
+                                            {
+                                                item.param.map((item , paramIndex) => {
+                                                    return(
+                                                        <div className={item.checked?'item active': 'item'} key={paramIndex} onClick={checkedParams.bind(null , attrIndex , paramIndex)}>{item.title}</div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div style={{width:'100%' , height:'1px' , backgroundColor:'#EFEFEF'}}></div>
+                                </React.Fragment>
+                            )
+                        }):''
+                    }
                     {/* 这里添加一个DOM元素给界面撑起来,让最下面的可以成功显示 */}
                     <div style={{width:'100%' , height:'2rem'}}></div>
                 </div>
                 {/* 底部信息栏 */}
                 <div className='handel-wrap'>
-                    <div className='item'>共<span>16</span>件</div>
+                    <div className='item'>共<span>{itemTotal}</span>件</div>
                     <div className='item reset'>全部重置</div>
-                    <div className='item sure'>确定</div>
+                    <div className='item sure' onClick={goSearch.bind(null)}>确定</div>
                 </div>
             </div>
             {/* sendKeyWords={params.keywords}传值的目的是在这个页面点击搜索框的时候出来的搜索框上面就是当前搜索的内容 */}

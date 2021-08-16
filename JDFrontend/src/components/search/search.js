@@ -65,7 +65,6 @@ const Search = (props) => {
 
     //点击搜索按钮触发事件(onChange会触发改变obtainKeyword状态的效果,当点击的时候就是最后一次触发也就是最新的obtainKeyword,同样也是我们想要的数据)
     const addHistoryKeywords = (item)=>{
-        console.log('item' , item)
         //去掉重复的搜索
         for(let i = 0 ; i<aKeywords.length ; i++){
             if(aKeywords[i] === item){

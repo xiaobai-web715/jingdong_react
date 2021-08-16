@@ -88,4 +88,22 @@ const getData = (pUrl , pType='GET') => {
     })
 }
 
-export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData};
+//分类属性请求数据
+const getClassifyAttr= (pUrl , pType='GET') => {
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+//特定商品的分类属性请求数据
+const getAttr= (pUrl , pType='GET') => {
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr};
