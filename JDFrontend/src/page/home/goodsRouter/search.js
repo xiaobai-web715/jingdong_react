@@ -27,9 +27,11 @@ const Search = (props) => {
     const [maxPage , setMaxPage] = useState(0)
     //获取不同商品所需要的数据状态(初始状态)
     // keywords : decodeURIComponent(localParam(props.location.search).search.keywords)}这里折磨写是无奈之举,如果初始值设置成空的
-    // const [params , setParams] = useState({otopye:'all' , keywords : decodeURIComponent(localParam(props.location.search).search.keywords)})
-    const [params , setParams] = useState({otopye:'all' , keywords : '' , cid:'' , price1:'',price2:''})
+    // const [params , setParams] = useState({otopye:'all' , keywords : decodeURIComponent(localParam(props.locati on.search).search.keywords)})
+    const [params , setParams] = useState({otopye:'all' , keywords : '' , cid:'' , price1:'',price2:'' , param : ''})    
     //拷贝状态用于点击确定的时候触发params状态变化去刷新数据(这里之所以加个拷贝状态就是因为我给自己挖了一个坑,要是直接修改params状态不用点击确实就直接给刷新数据了)
+    //建立一个状态又来存放选中的param,然后转成字符串格式(我觉得点击确定的时候就可以直接传给parmas状态就可以了,因为有一个转换字符串的步骤)
+    const [aParam , setAParam] = useState([]);
     const [copyParams , setCopyParams] = useState({otopye:'all'})
     //这里添加一个状态来管理综合、价格从高到低和价格从低到高3个状态(视频中讲解这是数据驱动模式)
     const [aPriceOrder , setAPriceOrder] = useState([
@@ -55,7 +57,7 @@ const Search = (props) => {
         ]
     })
         //定义一个接收价格范围的状态好传给价格区间的input上
-    const [fPrice , setFPrice] = useState({fPrice1:0 , fPrice2:0})
+    const [fPrice , setFPrice] = useState({fPrice1:'' , fPrice2:''})
     //每种商品商品的特定属性选择集合
     const [aAttr , setAAttr] = useState([])
     //共多少件状态
@@ -162,28 +164,29 @@ const Search = (props) => {
             return params;
         };
         setParams(Object.assign({} , copyParams_copy(params)))
-    } , [props])
+    } , [props])// eslint-disable-line react-hooks/exhaustive-deps
+    //(目前只能先加这个来避免警告的产生)
     //对url进行分装目的就是为了能够去修改传入参数
     const getParams = (params)=>{
-        const sParams = 'kwords='+params.keywords+'&param=&price1='+params.price1+'&price2='+params.price2+'&otype='+params.otopye+'&cid='+params.cid+'&';
+        const sParams = 'kwords='+params.keywords+'&param='+params.param+'&price1='+params.price1+'&price2='+params.price2+'&otype='+params.otopye+'&cid='+params.cid+'&';
         return sParams;
     }
     //获取商品数据的方法
     useEffect(()=> {
-        // console.log('我被触发了')
         const param = getParams(params);
-        console.log('params' , config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token)
+        // console.log('params' , config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token)
         const dataPage = async() => {
             try{
                 //第一部分是直接请求第一页的商品数据,并获取后面所需要的的最大页数
                 const res = await getData(config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token);
-                console.log('res',res)
+                // console.log('res',res)
                 if(res.code === 200){
                     setData(_.get(res , ['data'] , []));
                     setMaxPage(_.get(res , ['pageinfo' , 'pagenum'] , 0));
                     setItemTotal(_.get(res,['pageinfo' , 'total'] , 0));
                 }else{
                     setData([]);
+                    setItemTotal(0)
                 }
             }catch(err){
                 console.log('请求商品数据出错' , err);
@@ -217,7 +220,7 @@ const Search = (props) => {
             }
             dataScorllPage();
         })
-    },[params , maxPage])
+    },[maxPage])// eslint-disable-line react-hooks/exhaustive-deps
     //实现图片懒加载
     useEffect(() =>{
         // console.log('data' , data)
@@ -233,6 +236,10 @@ const Search = (props) => {
         copyParams.keywords = item
         setParams(Object.assign({} , copyParams))
         setPageStyle('none');
+        //点击搜索之后再调用一下重置按钮(也就是你在第一次选定之后,在请求时这里要重置一下)
+        setReset();
+        setParams({...params , ...copyParams , param : aParam});
+        dataAttr();
     }
     //点击分类隐藏或显示
     const handleClassify = () =>{
@@ -324,12 +331,21 @@ const Search = (props) => {
     }
     //选择属性的值(多选部分)
     const checkedParams = (attrIndex , paramIndex) => {
+        let copyAParam = aParam
         let copyAAttr = aAttr;
         if(copyAAttr[attrIndex].param[paramIndex].checked){
             copyAAttr[attrIndex].param[paramIndex].checked = false;
+            for(let i = 0 ; i < copyAParam.length ; i++){
+                if(copyAParam[i] === copyAAttr[attrIndex].param[paramIndex].pid){
+                    copyAParam.splice(i , 1);
+                }
+            }
         }else{
             copyAAttr[attrIndex].param[paramIndex].checked = true;
+            copyAParam.push(copyAAttr[attrIndex].param[paramIndex].pid)
         }
+        // console.log('copyAParam' , copyAParam)
+        setAParam([...copyAParam])
         setAAttr([...copyAAttr])
     }
 
@@ -354,41 +370,103 @@ const Search = (props) => {
             }
         }
         dataClassify();
-    },[])
-
+    },[])// eslint-disable-line react-hooks/exhaustive-deps
     //获取特定商品的属性数据
-    useEffect(() => {
-        const dataAttr = async() =>{
-            try{
-                const res = await getAttr(config.baseUrl + '/api/home/goods/param?kwords='+params.keywords+'&token=' + config.token);
-                // console.log('res' , res)
-                if(res.code === 200){
-                    let data = _.get(res , ['data'] , [])
-                    for(let i = 0 ; i < data.length ; i++){
-                        data[i].checked = false;
-                        for(let t = 0 ; t < data[i].param.length ; t++){
-                            data[i].param[t].checked = false;
-                        }
+    const dataAttr = async() =>{
+        try{
+            const res = await getAttr(config.baseUrl + '/api/home/goods/param?kwords='+params.keywords+'&token=' + config.token);
+            // console.log('我是keyword的url' , config.baseUrl + '/api/home/goods/param?kwords='+params.keywords+'&token=' + config.token)
+            // console.log('res' , res)
+            if(res.code === 200){
+                let data = _.get(res , ['data'] , [])
+                for(let i = 0 ; i < data.length ; i++){
+                    data[i].checked = false;
+                    for(let t = 0 ; t < data[i].param.length ; t++){
+                        data[i].param[t].checked = false;
                     }
-                    // console.log('data' , data)
-                    setAAttr([...data])
                 }
-            }catch(err){
-                console.log('请求属性数据出错' , err);
+                // console.log('data' , data)
+                setAAttr([...data])
+            }else{
+                setAAttr([])
             }
+        }catch(err){
+            console.log('请求属性数据出错' , err);
         }
+    }
+    useEffect(() => {  
         dataAttr()
-    },[params])
+    },[])// eslint-disable-line react-hooks/exhaustive-deps
+    //将input输入引起的价格区间变动onChange事件函数提升到外面来
+    const fPrice1_change = e =>{
+        setFPrice({...fPrice , fPrice1 : e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')})
+    }
+    const fPrice2_change = e =>{
+        setFPrice({...fPrice , fPrice2 : e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')})
+    }
+    //价格状态变动将其添加到拷贝状态中去
+    useEffect(() => {
+        setCopyParams(copyParams => ({...copyParams , price1:fPrice.fPrice1 , price2:fPrice.fPrice2}))
+    },[fPrice])
+    // useEffect(()=>{
+    //     console.log('params',params)
+    // },[params])
     //点击确定按钮搜索
     const goSearch = () => {
-        // console.log('copyParams' , copyParams)
-        setParams({...params , ...copyParams});
+        const strAParam = aParam.length > 0 ? JSON.stringify(aParam) : '';
+        // console.log('strAParam' , strAParam)
+        setParams({...params , ...copyParams , param : strAParam});
         //触发控制面板退出
         hideScreen();
     }
-    useEffect(()=>{
-        console.log('params',params)
-    },[params])
+    //点击重置清除选中项目
+    const setReset = () =>{
+        // 先把所有状态都清空
+        let copyCopyParams = copyParams,
+            copyAParam = aParam,
+            copyAClassify = aClassify;
+        // console.log('copyCopyParams' , copyCopyParams)
+        // console.log('copyAParam' , copyAParam)
+        // console.log('copyAClassify' , copyAClassify)
+        copyCopyParams.otopye = 'all';
+        copyCopyParams.cid = '';
+        copyCopyParams.price1 = '';
+        copyCopyParams.price2 = '';
+        copyAParam = [];
+        //上面为止都是选中的状态的拷贝存储为止,只要没有点击确定就不会讲这些属性传给状态param，这里置空再点击确定就是最初的状态
+        for(let i = 0 ; i < copyAClassify.items.length ; i++){
+            copyAClassify.items[i].checked = false;
+        }
+        // console.log('copyCopyParams' , copyCopyParams)
+        // console.log('copyAParam' , copyAParam)
+        // console.log('copyAClassify' , copyAClassify)
+        setCopyParams(Object.assign({} , copyCopyParams))
+        setAParam(copyAParam);
+        //重置输入框所需要的保存价格的状态
+        setFPrice({fPrice1:'' , fPrice2:''})
+        //重置选中分类的内容
+        setAClassify(Object.assign({} , copyAClassify))
+        //价格范围重置
+        let copyAPrice = aPrice;
+        // console.log('copyAPrice' , copyAPrice)
+        for(let i = 0 ; i < copyAPrice.items.length ; i++){
+            copyAPrice.items[i].checked = false;
+        }
+        // console.log('copyAPrice' , copyAPrice)
+        setAPrice(Object.assign({} , copyAPrice))
+        //属性重置
+        let copyAAttr = aAttr;
+        // console.log('copyAAttr' , copyAAttr)
+        if(copyAAttr.length >0){
+            for(let i = 0 ; i < copyAAttr.length ; i++){
+                for(let j =0 ; j< copyAAttr[i].param.length;j++){
+                    copyAAttr[i].param[j].checked = false;
+                }
+            }
+        }
+        // console.log('copyAAttr' , copyAAttr)
+        setAAttr(copyAAttr)
+    }
     return (
         <div className='search-page'>
             <div className='search-top'>
@@ -467,9 +545,9 @@ const Search = (props) => {
                         <div className='attr-title-wrap' onClick={handlePrice.bind(null)}>
                             <div className='attr-name'>价格区间</div>
                             <div className='price-wrap'>
-                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice1 === 0?'':fPrice.fPrice1} type='tel' placeholder='最低价' onChange={(e)=> {setFPrice({...fPrice , fPrice1 : e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')})}}></input></div>
+                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice1 === 0?'':fPrice.fPrice1} type='tel' placeholder='最低价' onChange={fPrice1_change.bind(null)}></input></div>
                                 <div className='price-line'></div>
-                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice2 === 0?'':fPrice.fPrice2} type='tel' placeholder='最高价' onChange={(e)=> {setFPrice({...fPrice , fPrice2 : e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')})}}></input></div>
+                                <div className='price-input' onClick={preventBubble.bind(null)}><input value={fPrice.fPrice2 === 0?'':fPrice.fPrice2} type='tel' placeholder='最高价' onChange={fPrice2_change.bind(null)}></input></div>
                             </div>
                             <div className={aPrice.checked?'attr-icon':'attr-icon up'}></div>
                         </div>
@@ -515,7 +593,7 @@ const Search = (props) => {
                 {/* 底部信息栏 */}
                 <div className='handel-wrap'>
                     <div className='item'>共<span>{itemTotal}</span>件</div>
-                    <div className='item reset'>全部重置</div>
+                    <div className='item reset' onClick={setReset.bind(null)}>全部重置</div>
                     <div className='item sure' onClick={goSearch.bind(null)}>确定</div>
                 </div>
             </div>
