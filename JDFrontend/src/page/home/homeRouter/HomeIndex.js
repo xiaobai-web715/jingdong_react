@@ -29,6 +29,9 @@ const HomeIndex = (props) => {
     //添加一个点击改变搜索组件是否显示的状态
     const[pageStyle , setPageStyle] = useState('none');
 
+    let swiperTarget = null ;
+
+
     //监听滚动条滚动事件
     useEffect(() => {
         //设置一个开关来保证组价清除时不会再次更新事件监听触发的状态改变
@@ -89,13 +92,13 @@ const HomeIndex = (props) => {
     },[])
     // 目前的理解,useEffect是在dom树加载完成之后，才会去执行
     useEffect(()=>{
-        new Swiper('.swiper-wrap' , {
+        new Swiper(swiperTarget , {
             autoplay : 5000,
             pagination : '.swiper-pagination',
             autoplayDisableOnInteraction : false,
         })
         // console.log('3')
-    } , [dataSwiper]) 
+    } , [dataSwiper]) // eslint-disable-line react-hooks/exhaustive-deps
     //获取导航数据
     useEffect(()=>{
         const fetchNav = async()=>{
@@ -164,7 +167,7 @@ const HomeIndex = (props) => {
             <div>
                 <div className={'search-header ' + (scrollBar?'red-bg':'')}>
                     <div className='classify-icon' onClick = {pushPage.bind(null , 'goods/classify/items')}></div>
-                    <div className = 'search-wrap' onClick={changeSearch.bind(null)}>
+                    <div  className = 'search-wrap' onClick={changeSearch.bind(null)}>
                         <div className = 'search-icon'></div>
                         <div className = 'search-text'>请输入宝贝名称</div>
                     </div>
@@ -174,7 +177,7 @@ const HomeIndex = (props) => {
                 </div>
             </div>
             {/* 幻灯片 */}
-            <div className='swiper-wrap'>
+            <div className='swiper-wrap' ref={(swiper) => swiperTarget = swiper}>
                 <div className='swiper-wrapper'>
                     {/* 这里就可以使用请求到的数据进行替代了 */}
                     {
@@ -200,7 +203,7 @@ const HomeIndex = (props) => {
                     dataNav.map((item , index) => {
                         return(
                             <ul className='item' key={index}>
-                                <li className='item-img'><img src={item.image} alt={item.title}></img></li>
+                                <li className='item-img'><img src={item.image} alt={item.title} onClick={pushPage.bind(null , 'goods/classify/items?cid=' + item.cid)}></img></li>
                                 <li className='item-text'>{item.title}</li>
                             </ul>
                         )
@@ -221,13 +224,13 @@ const HomeIndex = (props) => {
                                         (item.title === GOODS_TYPE.SUIT_DRESS || item.title === GOODS_TYPE.COMPUTER_OFFICE)?
                                         (
                                             <>
-                                                <div className='goods-level1-item0'>
+                                                <div className='goods-level1-item0' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[0].gid !== null?item.items[0].gid:''))}>
                                                     <div className={'goods-title'+ (index + 1)}>{item.items[0].title}</div>
                                                     <div className={'goods-text'+ (index + 1)}>精品打折</div>
                                                     <div className={'goods-price'+ (index + 1)}>{item.items[0].price}</div>
                                                     <div className={'goods-img'+ (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[0].title} data-echo={item.items[0].image}></img></div>
                                                 </div>
-                                                <div className='goods-level1-item1'>
+                                                <div className='goods-level1-item1' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[1].gid !== null?item.items[1].gid:''))}>
                                                     <div className='goods-row'>
                                                         <div className={'goods-row-title'}>{item.items[1].title}</div>
                                                         <div className={'goods-row-text'}>品质精挑</div>
@@ -243,12 +246,12 @@ const HomeIndex = (props) => {
 
                                         ):(
                                             <>
-                                                <div className='goods-level1-item0'>
+                                                <div className='goods-level1-item0' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[0].gid !== null?item.items[0].gid:''))}>
                                                     <div className={'goods-title' + (index + 1)}>{item.items[0].title}</div>
                                                     <div className={'goods-text' + (index + 1)}>火爆开售</div>
                                                     <div className={'goods-img' + (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[0].title} data-echo={item.items[0].image}></img></div>
                                                 </div>
-                                                <div className='goods-level1-item0'>
+                                                <div className='goods-level1-item0' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[1].gid !== null?item.items[1].gid:''))}>
                                                     <div className={'goods-title' + (index + 1)}>{item.items[1].title}</div>
                                                     <div className={'goods-text' + (index + 1)}>火爆开售</div>
                                                     <div className={'goods-img' + (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[1].title} data-echo={item.items[1].image}></img></div>
@@ -262,7 +265,7 @@ const HomeIndex = (props) => {
                                     {item.items?
                                         (item.items.slice(-4).map((item_slice) => {
                                             return(
-                                                <div className='goods-list' key={item_slice.title}>
+                                                <div className='goods-list' key={item_slice.title} onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item_slice.gid !== null?item_slice.gid:''))}>
                                                     <div className='title'>{item_slice.title}</div>
                                                     <div className='image'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item_slice.title} data-echo={item_slice.image}></img></div>
                                                     <div className='price'>￥{item_slice.price}</div>
@@ -290,7 +293,7 @@ const HomeIndex = (props) => {
                 {dataReco.map((item , index)=>{
                     // 这个return是必须的
                     return(
-                        <div className='reco-item' key={index}>
+                        <div className='reco-item' key={index} onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.gid !== null?item.gid:''))}>
                             <div className='image'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.title} data-echo={item.image}></img></div>
                             <div className='title'>{item.title}</div>
                             <div className='price'>￥{item.price}</div>

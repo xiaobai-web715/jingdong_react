@@ -13,6 +13,7 @@ const Item = (props) => {
     const [uid , setUid] = useState('');
     // console.log('uid' , uid);
     const [dataGoods , setDataGoods] = useState([]);
+    let scrollTarget = null;
     //获取uid
     useEffect(()=> {
         const uidNew = localParam(props.location.search);
@@ -39,10 +40,10 @@ const Item = (props) => {
     },[uid])
     //商品部分也实现iscroll滑动效果
     useEffect(() => {
-        document.getElementById('scroll-goods').addEventListener('touchmove' , function(e){
+        scrollTarget.addEventListener('touchmove' , function(e){
             e.preventDefault();
         } , false)
-        let scroll = new IScroll ('#scroll-goods' , {
+        let scroll = new IScroll (scrollTarget , {
             scrollX : false,
             scrollY : true,
             preventDefault : false,
@@ -52,9 +53,9 @@ const Item = (props) => {
             lazyImg();
         })
         lazyImg()
-    } , [dataGoods])
+    } , [dataGoods])// eslint-disable-line react-hooks/exhaustive-deps
     return (
-        <div id='scroll-goods' className='goods-content-main'>
+        <div ref={div => scrollTarget = div} className='goods-content-main'>
             {/* 这里加也是为了满足那iscroll要求的3层模式,要不就会报错 */}
             <div>
             {

@@ -27,7 +27,7 @@ const Search = (props) => {
     const [maxPage , setMaxPage] = useState(0)
     //获取不同商品所需要的数据状态(初始状态)
     // keywords : decodeURIComponent(localParam(props.location.search).search.keywords)}这里折磨写是无奈之举,如果初始值设置成空的
-    // const [params , setParams] = useState({otopye:'all' , keywords : decodeURIComponent(localParam(props.locati on.search).search.keywords)})
+    // const [params , setParams] = useState({otopye:'all' , keywords : decodeURIComponent(localParam(props.location.search).search.keywords)})
     const [params , setParams] = useState({otopye:'all' , keywords : '' , cid:'' , price1:'',price2:'' , param : ''})    
     //拷贝状态用于点击确定的时候触发params状态变化去刷新数据(这里之所以加个拷贝状态就是因为我给自己挖了一个坑,要是直接修改params状态不用点击确实就直接给刷新数据了)
     //建立一个状态又来存放选中的param,然后转成字符串格式(我觉得点击确定的时候就可以直接传给parmas状态就可以了,因为有一个转换字符串的步骤)
@@ -64,13 +64,16 @@ const Search = (props) => {
     const [itemTotal , setItemTotal] = useState(0)
     //当点击筛选出现操作面板时,禁止滚动条的滑动效果
     //当点击筛选的时候触发操作面板动画效果
+
+    let maskTarget = null;
+    let screenTarget = null;
     const showScreen = () => {
         //这是目前我所能想到的绑定监听事件的方式,不知道函数组件有没有和类组件一样的ref可以使用
         // touchmove是滑动事件,当这俩个DOM元素出现时会触发禁止效果
-        document.getElementById('mask').addEventListener('touchmove' , function(e){
+        maskTarget.addEventListener('touchmove' , function(e){
             e.preventDefault();
         } , false)
-        document.getElementById('screen').addEventListener('touchmove' , function(e){
+        screenTarget.addEventListener('touchmove' , function(e){
             e.preventDefault();
         } , false)
         setBMask(true);
@@ -84,13 +87,13 @@ const Search = (props) => {
     //IScroll使用
     useEffect(() => {
         // console.log('aAttr' , aAttr)
-        new IScroll('#screen' ,{
+        new IScroll(screenTarget ,{
             scrollX : false,
             scrollY : true,
             preventDefault : false,
         });
         //这里需要异步刷新一下适应新的数据长度
-    } , [aClassify , aAttr])
+    } , [aClassify , aAttr])// eslint-disable-line react-hooks/exhaustive-deps
     //点击返回按钮触发返回
     const goBack = () => {
         props.history.goBack();
@@ -520,9 +523,9 @@ const Search = (props) => {
                 }
             </div>
             {/* 点击筛选产生的背景色,并通过事件监听禁用滑动效果 */}
-            <div id='mask' className={bMask?'mask':'mask hide'} onClick={hideScreen.bind(null)}></div>
+            <div ref = {div => maskTarget = div} className={bMask?'mask':'mask hide'} onClick={hideScreen.bind(null)}></div>
             {/* 点击筛选产生的控制面板 */}
-            <div id='screen' className={'screen ' + screenMove}>
+            <div ref = {div => screenTarget = div} className={'screen ' + screenMove}>
                 <div>
                     <div className='attr-wrap'>
                         <div className='attr-title-wrap' onClick={handleClassify.bind(null)}>
