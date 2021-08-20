@@ -2,13 +2,17 @@ import React , {useEffect} from 'react'
 import Swiper from '../../../assets/js/libs/swiper.min.js'
 import '../../../assets/css/common/goods/details_item.css'
 const DetailsItem = () => {
-    let swiperTarget = null;
+    let swiperTarget = null,
+        mask2 = null;
     useEffect(() => {
         new Swiper(swiperTarget , {
             autoplay : 5000,
             pagination : '.swiper-pagination2',
             autoplayDisableOnInteraction : false,
-        })
+        });
+        mask2.addEventListener('touchmove' , function(e){
+            e.preventDefault();
+        } , false)
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     return (
         <div>
@@ -65,7 +69,7 @@ const DetailsItem = () => {
                 <div className='btn cart'>加入购物车</div>
             </div>
             {/* 点击加入购物车产生的背景 */}
-            <div className='mask2'></div>
+            <div className='mask2' ref={div => mask2 = div}></div>
             {/* 控制面板 */}
             <div className='cart-panel'>
                 <div className='goods-info'>
@@ -87,6 +91,32 @@ const DetailsItem = () => {
                         <div className='attr-name'>颜色</div>
                         <div className='val-wrap'>
                             <div className='val active'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                        </div>
+                    </div>
+                    <div className='attr-list'>
+                        <div className='attr-name'>颜色</div>
+                        <div className='val-wrap'>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                            <div className='val'>灰色</div>
+                        </div>
+                    </div>
+                    <div className='attr-list'>
+                        <div className='attr-name'>颜色</div>
+                        <div className='val-wrap'>
+                            <div className='val'>灰色</div>
                             <div className='val'>灰色</div>
                             <div className='val'>灰色</div>
                             <div className='val'>灰色</div>
