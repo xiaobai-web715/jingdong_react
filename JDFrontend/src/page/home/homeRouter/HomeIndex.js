@@ -262,13 +262,13 @@ const HomeIndex = (props) => {
                                                     <div className={'goods-price'+ (index + 1)}>{item.items[0].price}</div>
                                                     <div className={'goods-img'+ (index + 1)}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[0].title} data-echo={item.items[0].image}></img></div>
                                                 </div>
-                                                <div className='goods-level1-item1' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[1].gid !== null?item.items[1].gid:''))}>
-                                                    <div className='goods-row'>
+                                                <div className='goods-level1-item1'>
+                                                    <div className='goods-row' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[1].gid !== null?item.items[1].gid:''))}>
                                                         <div className={'goods-row-title'}>{item.items[1].title}</div>
                                                         <div className={'goods-row-text'}>品质精挑</div>
                                                         <div className={'goods-row-img'}><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[1].title} data-echo={item.items[1].image}></img></div>
                                                     </div>
-                                                    <div className='goods-row'>
+                                                    <div className='goods-row' onClick={pushPage.bind(null , 'goods/details/item?gid=' + (item.items[2].gid !== null?item.items[2].gid:''))}>
                                                         <div className='goods-row-title'>{item.items[2].title}</div>
                                                         <div className='goods-row-text'>品质精挑4折起</div>
                                                         <div className='goods-row-img'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.items[2].title} data-echo={item.items[2].image}></img></div>

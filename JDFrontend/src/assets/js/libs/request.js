@@ -106,4 +106,14 @@ const getAttr= (pUrl , pType='GET') => {
     })
 }
 
-export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr};
+//获取商品的轮播图的数据
+const getGoodsSwiper = (pUrl , pType='GET') => {
+
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr , getGoodsSwiper};

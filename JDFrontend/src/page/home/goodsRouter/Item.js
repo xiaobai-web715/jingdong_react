@@ -68,6 +68,10 @@ const Item = (props) => {
         })
         lazyImg()
     } , [dataGoods])// eslint-disable-line react-hooks/exhaustive-deps
+    //点击跳转
+    const goPage = (pUrl) => {
+        props.history.push(config.path + pUrl);
+    }
     return (
         <div ref={div => scrollTarget = div} className='goods-content-main'>
             {/* 这里加也是为了满足那iscroll要求的3层模式,要不就会报错 */}
@@ -83,7 +87,7 @@ const Item = (props) => {
                                         _.get(item , ['goods'] , []) != null?(
                                             _.get(item , ['goods'] , []).map((item , index) => {
                                                 return(
-                                                    <div className = 'items' key={index}>
+                                                    <div className = 'items' key={index} onClick={goPage.bind(null , 'goods/details/item?gid=' + item.gid)}>
                                                         <img src={require('../../../assets/images/common/lazyImg.jpg').default} data-echo={item.image} alt={item.title}></img>
                                                         <div className='title'>{item.title}</div>
                                                     </div>

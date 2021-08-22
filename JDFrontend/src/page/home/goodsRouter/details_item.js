@@ -1,6 +1,7 @@
 import React , {useEffect , useState} from 'react'
 import {findDOMNode} from 'react-dom'
-import { localParam , setScrollTop} from '../../../assets/js/utils/utils.js'
+import { getGoodsSwiper} from '../../../assets/js/libs/request.js'
+import { localParam , setScrollTop  , lazyImg} from '../../../assets/js/utils/utils.js'
 import Swiper from '../../../assets/js/libs/swiper.min.js'
 import config from '../../../assets/js/conf/config.js'
 import TweenMax from '../../../assets/js/libs/TweenMax.js'
@@ -13,12 +14,13 @@ const DetailsItem = (props) => {
         targetImg = null,
         targetGoodsInfo = null,
         targetCartPanel = null,
-        bChoose = false;
+        bChoose = false,
+        targetPag = null;
     //不需要双向绑定的变量可以不用useState来创建,因为这个变量改变并不会立马刷新组件(通俗一点就是我的这个变量是在点击事件这样的函数里面执行的)
     const [gid , setGid] = useState('');
     const [bMask , setBMask] = useState(false);
     const [sCartPanel , setSCartPanel] = useState('down');
-    //添加一个状态用来存储获取的后台数据
+    //添加一个状态用来存储获取的后台分类数据
     const [aAttr , setAAttr] = useState([
         {
             'attrid' : '1006',
@@ -50,12 +52,51 @@ const DetailsItem = (props) => {
             }]
         }
     ])
+    //定义保存轮播图数据的状态
+    const [aSlide , setASlide] = useState([]);
+    //定义title状态
+    const [sGoodsTitle , setSGoodsTitle] = useState('');
+    //定义价格状态
+    const [fPrice , setFPrice] = useState(0);
+    //运费状态
+    const [fFreight , setFFreight] = useState(0);
+    //销量状态
+    const [iSales , setISales] = useState(0);
+    //将请求的url封装起来
+    const targetUrl = (gid) => {
+        let url = config.baseUrl + '/api/home/goods/info?gid='+gid+'&type=details&token=' + config.token;
+        return url;
+    }
     useEffect(() => {
         // 解决单页面应用连续两个页面都有滚动条而导致的滚动条定位问题
         // console.log('我是路由跳转document.documentElement.scrollTop' , document.documentElement.scrollTop)
         // console.log('我是路由跳转document.body.scrollTop' , document.body.scrollTop)
         setScrollTop(0);
     },[])
+    useEffect(() => {
+        let isUnmounted = false;
+        let url = targetUrl(gid);
+        //获取轮播图数据和商品信息数据
+        const getSwiperDatas = async() => {
+            try{
+                const res = await getGoodsSwiper(url);
+                if(res.code === 200 && !isUnmounted){
+                    console.log('res' , res)
+                    setASlide(_.get(res , ['data' , 'images'] , []));
+                    setSGoodsTitle(_.get(res , ['data' , 'title'] , []));
+                    setFPrice(_.get(res , ['data' , 'price'] , []));
+                    setFFreight(_.get(res , ['data' , 'freight'] , []));
+                    setISales(_.get(res , ['data' , 'sales'] , []));
+                }
+            }catch(err){
+                console.log('请求轮播图数据出错' , err)
+            }
+        }
+        getSwiperDatas();
+        return () => {
+            isUnmounted = true;
+        }
+    } , [gid])
     //定义一个状态来存储加入购物车中的数量
     const [iAmount , setIAmount] = useState(1);
     useEffect(() => {
@@ -67,16 +108,20 @@ const DetailsItem = (props) => {
                 setGid(_.get(targetGId , ['search' , 'gid'] , ''));
             }
         }
-        new Swiper(swiperTarget , {
-            autoplay : 5000,
-            pagination : '.swiper-pagination2',
-            autoplayDisableOnInteraction : false,
-        });
         //这个会在组件销毁的时候去执行里面的操作
         return () => {
             isUnmounted = true;
         }
     },[])// eslint-disable-line react-hooks/exhaustive-deps
+    //轮播图效果,受aSlide状态的影响
+    useEffect(() => {
+        new Swiper(swiperTarget , {
+            autoplay : 3000,
+            pagination : targetPag,
+            autoplayDisableOnInteraction : false,
+        });
+        lazyImg();
+    } , [aSlide])// eslint-disable-line react-hooks/exhaustive-deps
     //显示购物控制面板
     const showCartPanel = () =>{
         setBMask(true);
@@ -197,21 +242,29 @@ const DetailsItem = (props) => {
     return (
         <div>
             <div className='swiper-wrap2' ref={div => swiperTarget = div}>
-                <div className='swiper-wrapper2'>
-                    <div className='swiper-slide2'>
-                        <img src='' alt=''></img>
-                        <img src='' alt=''></img>
-                        <img src='' alt=''></img>
-                    </div>
-                    <div className='swiper-pagination2'></div>
+                {/* 使用swiper要出现分页点的话这里必须叫swiper-wrapper */}
+                <div className='swiper-wrapper'>
+                        {
+                            aSlide.length > 0 ?
+                            aSlide.map((item , index) => {
+                                return(
+                                    /* 使用swiper要出现分页点的话这里必须叫swiper-slide */
+                                    <div className='swiper-slide'  key={index}>
+                                        <img src={require('../../../assets/images/common/lazyImg.jpg').default} alt='' data-echo={item}></img>
+                                    </div>
+                                )
+                            }):''
+                        }
                 </div>
+                {/* 使用swiper要出现分页点的话这里必须叫swiper-pagination */}
+                <div className='swiper-pagination' ref={div => targetPag = div}></div>
             </div>
             <div className='goods-ele-main'>
-                <div className='goods-ele-title'>你说啥名字好呢</div>
-                <div className='goods-ele-price'>￥128</div>
+                <div className='goods-ele-title'>{sGoodsTitle}</div>
+                <div className='goods-ele-price'>￥{fPrice}</div>
                 <ul className='goods-ele-sales-wrap'>
-                    <li>快递: 20元</li>
-                    <li>月销量10件</li>
+                    <li>快递: {fFreight}元</li>
+                    <li>月销量{iSales}件</li>
                 </ul>
             </div>
             <div className='reviews-main2'>
@@ -259,11 +312,11 @@ const DetailsItem = (props) => {
                         <div className='line'></div>
                         <div className='close' onClick={hideCartPanel.bind(null)}></div>
                     </div>
-                    <div ref={div => targetImg = div} className='goods-img'><img src='' alt=''></img></div>
+                    <div ref={div => targetImg = div} className='goods-img'><img src={aSlide.lenght!==0?aSlide[0]:''} alt=''></img></div>
                     <div className='goods-wrap2'>
-                        <div className='goods-wrap2-title'>你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢你说啥名字好呢</div>
-                        <div className='price'>￥128</div>
-                        <div className='goods-code'>商品编码:15354894</div>
+                        <div className='goods-wrap2-title'>{sGoodsTitle}</div>
+                        <div className='price'>￥{fPrice}</div>
+                        <div className='goods-code'>商品编码:{gid}</div>
                     </div>
                 </div>
                 <div className='attr-wrap2'>

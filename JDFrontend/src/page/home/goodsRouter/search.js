@@ -507,6 +507,10 @@ const Search = (props) => {
         // console.log('copyAAttr' , copyAAttr)
         setAAttr(copyAAttr)
     }
+    //点击跳转
+    const goPage = (pUrl) => {
+        props.history.push(config.path + pUrl);
+    }
     return (
         <div className='search-page'>
             <div className='search-top'>
@@ -547,7 +551,7 @@ const Search = (props) => {
                     data.length >0?
                     data.map((item , index) => {
                         return(
-                            <div className='goods-list2' key={index}>
+                            <div className='goods-list2' key={index} onClick ={goPage.bind(null , 'goods/details/item?gid='+item.gid)}>
                                 <div className='image'><img src={require('../../../assets/images/common/lazyImg.jpg').default} data-echo={item.image} alt={item.title}></img></div>
                                 <div className='goods-content2'>
                                     <div className='goods-title2'>{item.title}</div>
