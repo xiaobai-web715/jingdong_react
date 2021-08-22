@@ -30,8 +30,17 @@ function localParam(search , hash){
         hash : fn(hash , new RegExp("([^#=&]+)(=([^&]*))?" , "g")) || {}
     }
 }
+//解决滚动定位问题
+const setScrollTop = (val) => {
+    setTimeout(() => {
+        // 兼容谷歌和火狐的写法
+        document.body.scrollTop = val;
+        document.documentElement.scrollTop = val;
+    } , 400)
+}
 
 export{
     lazyImg,
     localParam,
+    setScrollTop,
 }

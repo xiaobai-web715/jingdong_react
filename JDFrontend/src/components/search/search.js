@@ -51,16 +51,22 @@ const Search = (props) => {
 
     //获取热门搜索数据
     useEffect(()=>{
+        let isUnmounted = false;
         const dataHotKeywords = async()=>{
             try{
                 const res = await getHotKeywords(config.baseUrl + 'api/home/public/hotwords?token=' + config.token);
                 // console.log('res' , res);
-                setDatasHotKeywords(_.get(res , ['data'] , []));
+                if(!isUnmounted){
+                    setDatasHotKeywords(_.get(res , ['data'] , []));
+                }
             }catch(err){
                 console.log('请求热门数据出错' , err);
             }
         }
         dataHotKeywords();
+        return () =>{
+            isUnmounted = true;
+        }
     },[])
 
     //点击搜索按钮触发事件(onChange会触发改变obtainKeyword状态的效果,当点击的时候就是最后一次触发也就是最新的obtainKeyword,同样也是我们想要的数据)
@@ -93,14 +99,20 @@ const Search = (props) => {
         setObtainKeyword('');
     }
     useEffect(()=>{
-        if(aKeywords.length > 0){
-            setClose(false);
-        }else{
-            setClose(true);
+        let isUnmounted = false;
+        if(!isUnmounted){
+            if(aKeywords.length > 0){
+                setClose(false);
+            }else{
+                setClose(true);
+            }
         }
         //1.选购商品信息(这里就将新的内容传给了仓库里面的action)
         //这里也不能写进addHistoryKeywords这个点击事件里面,因为那样传的值是状态刷新之前的值
         dispatch(setHistoryKeywords(aKeywords));
+        return () => {
+            isUnmounted = true;
+        }
     },[aKeywords , dispatch])
 
     //点击搜索触发跳转到商品搜索信息的页面

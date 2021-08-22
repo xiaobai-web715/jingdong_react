@@ -16,20 +16,31 @@ const Item = (props) => {
     let scrollTarget = null;
     //获取uid
     useEffect(()=> {
+        let isUnmounted = false;
         const uidNew = localParam(props.location.search);
         // console.log('uidNew' , uidNew);
-        setUid(_.get(uidNew , ['search' , 'cid'] , ''))
+        if(!isUnmounted){
+            setUid(_.get(uidNew , ['search' , 'cid'] , ''))
+        }
+        return () => {
+            isUnmounted = true;
+        }
     },[props])
     //根据不同的参数cid来获取不同的商品数据
     useEffect(() =>{
+        let isUnmounted = false;
         const getDataGoods = async() => {
             try{
                 const res = await getGoods(config.baseUrl + `/api/home/category/show?cid=${uid}&token=` + config.token);
                 if(res.code === 200){
-                    setDataGoods(_.get(res , ['data'] , []));
+                    if(!isUnmounted){
+                        setDataGoods(_.get(res , ['data'] , []));
+                    }
                 }else{
                     // 他这里还有一个201状态的情况
-                    setDataGoods([]);
+                    if(!isUnmounted){
+                        setDataGoods([]);
+                    }
                 }
                 // console.log('res' , res);
             }catch(err){
@@ -37,6 +48,9 @@ const Item = (props) => {
             }
         }
         getDataGoods();
+        return () => {
+            isUnmounted = true;
+        }
     },[uid])
     //商品部分也实现iscroll滑动效果
     useEffect(() => {

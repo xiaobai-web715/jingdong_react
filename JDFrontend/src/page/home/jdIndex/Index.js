@@ -21,20 +21,26 @@ const JDIndex = (props) => {
         //这里必须加入这个config.path才不会出错(不加上的话，就会一直在前面添加根路径，也就是jd)(目前还不清楚为啥)
     }
     useEffect(()=>{
-        switch(props.location.pathname){
-            case config.path + 'jd/home':
-                setStateStyle({bHomeStyle : true , bCartStyle : false , bUserStyle : false})
-                break;
-            case config.path + 'jd/cart':
-                setStateStyle({bCartStyle : true , bHomeStyle : false , bUserStyle : false})
-                break;
-            case config.path + 'jd/user':
-                setStateStyle({bUserStyle : true , bCartStyle : false , bHomeStyle : false})
-                break;
-            // 这一段最好加上，要不然会报错
-            default:
-                break;
-
+        let isUnmounted = false;
+        if(!isUnmounted){
+            switch(props.location.pathname){
+                case config.path + 'jd/home':
+                    setStateStyle({bHomeStyle : true , bCartStyle : false , bUserStyle : false})
+                    break;
+                case config.path + 'jd/cart':
+                    setStateStyle({bCartStyle : true , bHomeStyle : false , bUserStyle : false})
+                    break;
+                case config.path + 'jd/user':
+                    setStateStyle({bUserStyle : true , bCartStyle : false , bHomeStyle : false})
+                    break;
+                // 这一段最好加上，要不然会报错
+                default:
+                    break;
+    
+            }
+        }
+        return () => {
+            isUnmounted = true;
         }
     },[props])
     return (

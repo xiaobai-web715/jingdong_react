@@ -3,7 +3,7 @@ import _ from 'lodash'
 //请求数据的方法
 import {getSwiper , getNav , getGoodsLevel , getReco} from '../../../assets/js/libs/request'
 //图片懒加载的方法
-import { lazyImg } from '../../../assets/js/utils/utils'
+import { lazyImg , setScrollTop} from '../../../assets/js/utils/utils'
 //config配置文件
 import config from '../../../assets/js/conf/config'
 import GOODS_TYPE from './mold.js'
@@ -30,28 +30,39 @@ const HomeIndex = (props) => {
     const[pageStyle , setPageStyle] = useState('none');
 
     let swiperTarget = null ;
-
-
+    useEffect(() =>{
+        //这里就是挂载的时候触发这个解决单页面切换的滚动轴定位问题的函数,把值传进去
+        // console.log('我是这个' , global.scrollTop.index)
+        setScrollTop(global.scrollTop.index);
+    } , [])
     //监听滚动条滚动事件
     useEffect(() => {
-        //设置一个开关来保证组价清除时不会再次更新事件监听触发的状态改变
-        let scrollChoose = true;
+        let isUnmounted = false;
+        let iScorllTop = 0;
         const eventScorll = () =>{
-            let iScorllTop = document.documentElement.scrollTop || document.body.scrollTop;
-            if(scrollChoose){
+            // console.log('isUnmounted' , isUnmounted)
+            //这里有个严重的问题目前还不清楚到底是啥原因,不过在点击路由跳转的时候还是会触发一遍这个监听函数,然后导致执行获取到的iScorllTop是跳转的路由界面的值
+            if(!isUnmounted){
+                // console.log('document.documentElement.scrollTop' , document.documentElement.scrollTop)
+                // console.log('document.body.scrollTop' , document.body.scrollTop)
+                iScorllTop = document.documentElement.scrollTop || document.body.scrollTop;
+                //获取导航的当前位置赋予到全局global的scrollTop的index里面     
+                // console.log('iScorllTop' , iScorllTop)
                 iScorllTop >= 80 ? setScrollBar(true):setScrollBar(false);
             }
+            global.scrollTop.index = iScorllTop;
         }
         //这里在render加载完成后执行一次,给window挂上一个事件监听函数,这样就可以在滚动条改变位置时触发上面的函数了
-        window.addEventListener('scroll' , eventScorll.bind(null));
+        window.addEventListener('scroll' , eventScorll , false);
         //!!!如何在卸载的时候取消掉事件监听函数,这里在useEffect中也有解决方式,就是返回一个函数,当useEffect返回的是一个函数的时候,React将会在执行清除操作时调用它
         return()=>{
-            scrollChoose = false            
-            window.removeEventListener('scroll' , eventScorll.bind(null))
+            isUnmounted = true;
+            window.removeEventListener('scroll' , eventScorll)
         }
     },[])
     // 获取接口数据
     useEffect(()=>{
+        let isUnmounted = false;
         // 这里可以试着打印一下，输出的结果是1,4,3(2bu执行的原因是状态改变了);然后状态改变1,4,3,2,因为await会使得后面的执行必须等待前一个await执行完成才可以(所以最好加try-catch)
         const fetchData = async  () =>{
             // console.log('config' , config)
@@ -80,7 +91,7 @@ const HomeIndex = (props) => {
                 //封装http://vueshop.glbuys.com地址(正式地址和测试地址),在这里做一个代理
                 //为什么要做代理(目的是防止跨域问题的出现)
                 const res = await getSwiper(config.baseUrl + "/api/home/index/slide?token=" + config.token);
-                if(res.code === 200){
+                if(res.code === 200 && !isUnmounted){
                     setDataSwiper(_.get(res , ['data'] , []))
                 }
             }catch(err){
@@ -89,6 +100,9 @@ const HomeIndex = (props) => {
             // console.log('2');
         }
         fetchData();
+        return () => {
+            isUnmounted = true;
+        }
     },[])
     // 目前的理解,useEffect是在dom树加载完成之后，才会去执行
     useEffect(()=>{
@@ -101,43 +115,61 @@ const HomeIndex = (props) => {
     } , [dataSwiper]) // eslint-disable-line react-hooks/exhaustive-deps
     //获取导航数据
     useEffect(()=>{
+        let isUnmounted = false;
         const fetchNav = async()=>{
             try{
                 const res = await getNav(config.baseUrl + '/api/home/index/nav?token=' + config.token);
                 // console.log('res' , res);
-                setDataNav(_.get(res , ['data'] , []));
+                if(!isUnmounted){
+                    setDataNav(_.get(res , ['data'] , []));
+                }
             }catch(err){
                 console.log('请求中间导航数据出错了' , err);
             }
         }
         fetchNav()
+        return () => {
+            isUnmounted = true;
+        }
     },[])
     //请求产品分类数据
     useEffect(()=>{
+        let isUnmounted = false;
         const fetchGoodsLevel = async()=>{
             try{
                 const res = await getGoodsLevel(config.baseUrl + '/api/home/index/goodsLevel?token=' + config.token);
                 // console.log('res' , res);
-                setDataGoodsLevel(_.get(res , ['data'] , []))
+                if(!isUnmounted){
+                    setDataGoodsLevel(_.get(res , ['data'] , []));   
+                }
             }catch(err){
                 console.log('请求产品分类数据出错了' , err);
             }
         }
         fetchGoodsLevel()
+        return () => {
+            isUnmounted = true;
+        }
     },[])
 
     //获取为你推荐数据
     useEffect(() => {
+        let isUnmounted = false;
         const fetchReco = async() =>{
            try{
                const res = await getReco(config.baseUrl + '/api/home/index/recom?token=' + config.token);
             //    console.log('res' , res);
-               setDataReco(_.get(res , ['data'] , []));
+            if(!isUnmounted){
+                setDataReco(_.get(res , ['data'] , []));
+            }
            }catch(err){
                console.log('请求为你推荐数据出错' , err)
            } 
         }
         fetchReco();
+        return () => {
+            isUnmounted = true;
+        }
     },[])
     //函数组件实现图片懒加载
     useEffect(()=>{

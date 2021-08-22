@@ -145,6 +145,7 @@ const Search = (props) => {
     }
     //获取搜索产生的url上面的keywords
     useEffect(() => {
+        let isUnmounted = false;
         //好像是下面的这个写法出现了那个bug(这下面这个地方是肯定有问题的)
         // const keywords = decodeURIComponent(localParam(props.location.search).search.keywords);
         // setParams(params => {return {...params , keywords}});
@@ -166,7 +167,12 @@ const Search = (props) => {
             params.keywords = decodeURIComponent(localParam(props.location.search).search.keywords);
             return params;
         };
-        setParams(Object.assign({} , copyParams_copy(params)))
+        if(!isUnmounted){
+            setParams(Object.assign({} , copyParams_copy(params)));
+        }
+        return () =>{
+            isUnmounted = true;
+        }
     } , [props])// eslint-disable-line react-hooks/exhaustive-deps
     //(目前只能先加这个来避免警告的产生)
     //对url进行分装目的就是为了能够去修改传入参数
@@ -176,6 +182,7 @@ const Search = (props) => {
     }
     //获取商品数据的方法
     useEffect(()=> {
+        let isUnmounted = false;
         const param = getParams(params);
         // console.log('params' , config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token)
         const dataPage = async() => {
@@ -184,25 +191,33 @@ const Search = (props) => {
                 const res = await getData(config.baseUrl + '/api/home/goods/search?'+param+'page=1&token=' + config.token);
                 // console.log('res',res)
                 if(res.code === 200){
-                    setData(_.get(res , ['data'] , []));
-                    setMaxPage(_.get(res , ['pageinfo' , 'pagenum'] , 0));
-                    setItemTotal(_.get(res,['pageinfo' , 'total'] , 0));
+                    if(!isUnmounted){
+                        setData(_.get(res , ['data'] , []));
+                        setMaxPage(_.get(res , ['pageinfo' , 'pagenum'] , 0));
+                        setItemTotal(_.get(res,['pageinfo' , 'total'] , 0));
+                    }
                 }else{
-                    setData([]);
-                    setItemTotal(0)
+                    if(!isUnmounted){
+                        setData([]);
+                        setItemTotal(0)
+                    }
                 }
             }catch(err){
                 console.log('请求商品数据出错' , err);
             } 
         }
         dataPage();
+        return () =>{
+            isUnmounted = true;
+        }
     },[params])
     //滑动请求商品的方法
     useEffect(() => {
         // console.log('maxPage' , maxPage)
         //滑动请求商品所需要传的3个参数
         let curPage = 1,
-            offsetBottom = 300;
+            offsetBottom = 300,
+            isUnmounted = false;
         const param = getParams(params);
         //这里在最开始是不会触发的,因为这个请求写在回调函数里面了
         new UpRefresh({"curPage" : curPage , 'maxPage' : maxPage  , 'offsetBottom' : offsetBottom} , curPage => {
@@ -213,9 +228,13 @@ const Search = (props) => {
                     // console.log('res',res)
                     //用扩展运算符进行浅拷贝来修改状态(写成这样的箭头函数形式的,并且返回一个我们需要的值,不会触发React Hook useEffect has missing dependencies:data这个警告,这里如果添加一个data依赖的话,会出现问题)
                     if(res.code === 200){
-                        setData(data => [...data ,  ...(_.get(res , ['data'] , []))]);
+                        if(!isUnmounted){
+                            setData(data => [...data ,  ...(_.get(res , ['data'] , []))]);
+                        }
                     }else{
-                        setData([]); 
+                        if(!isUnmounted){
+                            setData([]); 
+                        }
                     }
                 }catch(err){
                     console.log('请求商品数据出错' , err);
@@ -232,16 +251,16 @@ const Search = (props) => {
 
     //这个函数会传进search公共组件里面,当被调用在公共组件被调用的时候会从里面传过来一个val值，然后替修改params中的keywords并更新状态刷请求数据
     const getChildKeywords = (item , url) =>{
-        // console.log('item' , item)
-        // 这里的这个val值就是search公共组件里面路由跳转的时候的item值，也就是搜索的商品名称
-        props.history.replace(config.path + url)
-        let copyParams = params;
-        copyParams.keywords = item
-        setParams(Object.assign({} , copyParams))
-        setPageStyle('none');
+        //还要传入serach组件里面一个函数,这个函数的目的就是点击搜索时会触发重置属性的目的
         //点击搜索之后再调用一下重置按钮(也就是你在第一次选定之后,在请求时这里要重置一下)
         setReset();
-        setParams({...params , ...copyParams , param : aParam});
+        // console.log('copyParams' , copyParams)
+        // 这里的这个val值就是search公共组件里面路由跳转的时候的item值，也就是搜索的商品名称
+        props.history.replace(config.path + url)
+        let copyParams_ = params;
+        copyParams_.keywords = item
+        setPageStyle('none');
+        setParams({...copyParams_ , ...copyParams , param : aParam});
         dataAttr();
     }
     //点击分类隐藏或显示
@@ -354,6 +373,7 @@ const Search = (props) => {
 
      //获取分类数据
      useEffect(() => {
+         let isUnmounted = false;
         const dataClassify = async() => {
             try{
                 const res = await getClassifyAttr(config.baseUrl + '/api/home/category/menu?token=' + config.token)
@@ -366,13 +386,18 @@ const Search = (props) => {
                     }
                     copyAClassify.items = data;
                     // console.log('data' , data)
-                    setAClassify(Object.assign({} , copyAClassify))
+                    if(!isUnmounted){
+                        setAClassify(Object.assign({} , copyAClassify))
+                    }
                 }
             }catch(err){
                 console.log('请求分类属性数据出错' , err)
             }
         }
         dataClassify();
+        return() => {
+            isUnmounted = true;
+        }
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     //获取特定商品的属性数据
     const dataAttr = async() =>{
@@ -398,7 +423,13 @@ const Search = (props) => {
         }
     }
     useEffect(() => {  
-        dataAttr()
+        let isUnmounted = false;
+        if(!isUnmounted){
+            dataAttr();
+        }
+        return () => {
+            isUnmounted = true;
+        }
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     //将input输入引起的价格区间变动onChange事件函数提升到外面来
     const fPrice1_change = e =>{
@@ -409,7 +440,13 @@ const Search = (props) => {
     }
     //价格状态变动将其添加到拷贝状态中去
     useEffect(() => {
-        setCopyParams(copyParams => ({...copyParams , price1:fPrice.fPrice1 , price2:fPrice.fPrice2}))
+        let isUnmounted = false;
+        if(!isUnmounted){
+            setCopyParams(copyParams => ({...copyParams , price1:fPrice.fPrice1 , price2:fPrice.fPrice2}))
+        }
+        return () => {
+            isUnmounted = true;
+        }
     },[fPrice])
     // useEffect(()=>{
     //     console.log('params',params)
@@ -418,7 +455,7 @@ const Search = (props) => {
     const goSearch = () => {
         const strAParam = aParam.length > 0 ? JSON.stringify(aParam) : '';
         // console.log('strAParam' , strAParam)
-        setParams({...params , ...copyParams , param : strAParam});
+        setParams({...params , ...copyParams  , param : strAParam});
         //触发控制面板退出
         hideScreen();
     }

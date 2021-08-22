@@ -1,9 +1,10 @@
 import React from 'react'
+import '../../../assets/css/common/goods/details_reviews.css'
 
 const DetailsReviews = () => {
     return (
-        <div>
-            详情页面
+        <div className='page3'>
+            评论页面
         </div>
     )
 }
