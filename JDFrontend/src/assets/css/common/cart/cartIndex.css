@@ -1,0 +1,202 @@
+.cart-main{
+    width:100%;
+    margin-top:2rem;
+    margin-bottom:4.4rem;
+}
+
+.cart-main .cart-list{
+    height:4.4rem;
+    width:100%;
+    background-color:#FFFFFF;
+    display:flex;
+    align-items:center;
+    margin-top:0.2rem;
+}
+
+.cart-main .cart-list .select-btn{
+    width:0.8rem;
+    height:0.8rem;
+    border:1px solid #EFEFEF;
+    border-radius:100%;
+    margin-left:0.4rem;
+    margin-right:0.6rem;
+}
+
+.cart-main .cart-list .select-btn.active{
+    background-image:url('../../../images/home/cart/checkmark.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+    border:0 none;
+}
+
+.cart-main .cart-list .image-wrap{
+    width:2.4rem;
+    margin-right:0.6rem;
+}
+
+.cart-main .cart-list .image-wrap .image{
+    width:2.4rem;
+    height:2.4rem;
+}
+
+.cart-main .cart-list .image-wrap .image img{
+    width:100%;
+    height:100%;
+}
+
+.cart-main .cart-list .image-wrap .del{
+    width:100%;
+    text-align:center;
+    font-size:0.48rem;
+    color:#B5B5B5;
+    margin-top:0.4rem;
+}
+
+.cart-main .cart-list .goods-wrap{
+    width:64%;
+    font-size:0.48rem;
+}
+
+.cart-main .cart-list .goods-wrap .goods-title{
+    width:100%;
+    overflow:hidden;
+}
+
+.cart-main .cart-list .goods-wrap .goods-attr{
+    width:100%;
+    margin-top:0.2rem;
+}
+
+.cart-main .cart-list .goods-wrap .goods-attr span{
+   padding-right:0.6rem; 
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap{
+    width:100%;
+    height:1.6rem;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap .price{
+    font-size:0.56rem;
+    color:#CC0004;
+    margin-top:0.4rem;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap  .amount-input-wrap{
+    width:4.08rem;
+    height:1rem;
+    border:1px solid #000000;
+    margin-right:0.4rem;
+    border-radius:0.16rem;
+    display:flex;
+    align-items: center;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap  .amount-input-wrap .dec{
+    width:1.2rem;
+    height:0.8rem;
+    border-right:1px solid #000000;
+    font-size:0.64rem;
+    text-align:center;
+    line-height:0.8rem;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap  .amount-input-wrap .active{
+    color:#B5B5B5;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap  .amount-input-wrap .amount-input{
+    width:1.52rem;
+    height:100%;
+    display:flex;
+    align-items: center;
+    font-size:0.64rem;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap  .amount-input-wrap .amount-input input{
+    width:100%;
+    height:95%;
+    text-align:center;
+}
+
+.cart-main .cart-list .goods-wrap .buy-wrap  .amount-input-wrap .inc{
+    width:1.2rem;
+    height:0.8rem;
+    border-left:1px solid #000000;
+    font-size:0.64rem;
+    text-align:center;
+    line-height:0.8rem;
+}
+
+.orderend-wrap{
+    width:100%;
+    height:2rem;
+    background:#FFFFFF;
+    position:fixed;
+    z-index:10;
+    left:0;
+    bottom:2.4rem;
+    border-top:1px solid #EFEFEF;
+    display:flex;
+}
+
+.orderend-wrap .select-area{
+    width:auto;
+    flex:3;
+    height:100%;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+}
+
+.orderend-wrap .select-area .select-wrap{
+    width:auto;
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+}
+
+.orderend-wrap .select-area .select-wrap .select-btn{
+    width:0.8rem;
+    height:0.8rem;
+    border:1px solid #EFEFEF;
+    border-radius:100%;
+    margin-left:0.4rem;
+    margin-right:0.2rem; 
+}
+
+.orderend-wrap .select-area .select-wrap .select-btn.active{
+    background-image:url('../../../images/home/cart/checkmark.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+    border:0 none;
+}
+
+.orderend-wrap .select-area .select-wrap .select-text{
+    font-size:0.48rem;
+}
+
+.orderend-wrap .orderend-btn{
+    width:auto;
+    height:100%;
+    flex:1;
+    background-color:#CC0004;
+    font-size:0.64rem;
+    color:#FFFFFF;
+    text-align:center;
+    line-height:2rem;
+}
+
+.orderend-wrap .select-area .total{
+    font-size:0.48rem;
+    margin-right:0.4rem;
+}
+
+.orderend-wrap .select-area .total span{
+    color:#CC0004;
+}

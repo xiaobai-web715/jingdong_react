@@ -44,6 +44,10 @@ const Details = (props) => {
     const replacePage = (url) =>{
         props.history.replace(config.path + url);
     }
+    //点击购物车跳转到购物车界面
+    const pushPage = (url) =>{
+        props.history.push(config.path + url);
+    }
     return (
         <div>
             <div className='details-header'>
@@ -54,7 +58,7 @@ const Details = (props) => {
                     <div className={tabStyle.bReviews?'tab-name active':'tab-name'} onClick={replacePage.bind(null , 'goods/details/reviews?gid=' + gid)}>评价</div>
                 </div>
                 {/* 这里不知道该如何通过route进行传值 */}
-                <div className='cart-icon' id='cart-icon'>
+                <div className='cart-icon' id='cart-icon' onClick={pushPage.bind(null , 'jd/cart')}>
                     <div className='spot'></div>
                 </div>
             </div>

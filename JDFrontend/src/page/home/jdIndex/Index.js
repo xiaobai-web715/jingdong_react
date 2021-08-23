@@ -14,7 +14,7 @@ const JDIndex = (props) => {
     // console.log('stateStyle' , stateStyle)
     // {}这里最初不用赋值，因为执行到useEffect的时候会改变这个状态，再重新加载组件
     const goPage = (pUrl) =>{
-        props.history.replace(config.path + pUrl);
+        props.history.push(config.path + pUrl);
         // replace的作用是不让其添加到历史记录里面去
         // props.history.push(config.path + pUrl);
         // 如果用的是push的话，当点击同一个地方两次的时候，会有一个警告
