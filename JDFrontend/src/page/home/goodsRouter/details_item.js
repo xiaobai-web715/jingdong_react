@@ -1,6 +1,6 @@
 import React , {useEffect , useState} from 'react'
 import {findDOMNode} from 'react-dom'
-import { getGoodsSwiper} from '../../../assets/js/libs/request.js'
+import {getGoodsSwiper , getGoodsAttr , getGoodsReviews} from '../../../assets/js/libs/request.js'
 import { localParam , setScrollTop  , lazyImg} from '../../../assets/js/utils/utils.js'
 import Swiper from '../../../assets/js/libs/swiper.min.js'
 import config from '../../../assets/js/conf/config.js'
@@ -21,37 +21,11 @@ const DetailsItem = (props) => {
     const [bMask , setBMask] = useState(false);
     const [sCartPanel , setSCartPanel] = useState('down');
     //添加一个状态用来存储获取的后台分类数据
-    const [aAttr , setAAttr] = useState([
-        {
-            'attrid' : '1006',
-            'title' : '颜色',
-            'values' : [{
-                'vid' : '854',
-                'value' : '红色',
-                'checked' : false
-            },{
-                'vid' : '855',
-                'value' : '白色',
-                'checked' : false
-            },{
-                'vid' : '856',
-                'value' : '黑色',
-                'checked' : false
-            }]
-        },{
-            'attrid' : '1007',
-            'title' : '尺寸',
-            'values' : [{
-                'vid' : '857',
-                'value' : '36',
-                'checked' : false
-            },{
-                'vid' : '858',
-                'value' : '72',
-                'checked' : false
-            }]
-        }
-    ])
+    const [aAttr , setAAttr] = useState([])
+    //添加一个状态用来存储评论数据
+    const [aReviews , setAReviews] = useState([])
+    //添加一个状态用来保存评论总数
+    const [iReviewsTotal , setIReviewsTotal] = useState(0);
     //定义保存轮播图数据的状态
     const [aSlide , setASlide] = useState([]);
     //定义title状态
@@ -73,15 +47,15 @@ const DetailsItem = (props) => {
         // console.log('我是路由跳转document.body.scrollTop' , document.body.scrollTop)
         setScrollTop(0);
     },[])
+    //获取轮播图数据和商品信息数据
     useEffect(() => {
         let isUnmounted = false;
         let url = targetUrl(gid);
-        //获取轮播图数据和商品信息数据
         const getSwiperDatas = async() => {
             try{
                 const res = await getGoodsSwiper(url);
                 if(res.code === 200 && !isUnmounted){
-                    console.log('res' , res)
+                    // console.log('res' , res)
                     setASlide(_.get(res , ['data' , 'images'] , []));
                     setSGoodsTitle(_.get(res , ['data' , 'title'] , []));
                     setFPrice(_.get(res , ['data' , 'price'] , []));
@@ -97,6 +71,49 @@ const DetailsItem = (props) => {
             isUnmounted = true;
         }
     } , [gid])
+    //获取商品规格属性
+    useEffect(()=>{
+        let isUnmounted = false,
+            url = config.baseUrl + '/api/home/goods/info?gid='+gid+'&type=spec&token=' + config.token;
+        const getAttrDatas = async() => {
+            try{
+                const res = await getGoodsAttr(url);
+                if(res.code === 200 && !isUnmounted){
+                    setAAttr(_.get(res , ['data'] , []));
+                }
+            }catch(err){
+                console.log('请求商品规格属性数据出错' , err)
+            }
+        }
+        getAttrDatas();
+        return ()=>{
+            isUnmounted =true;
+        }
+    },[gid])
+    //获取商品评价数据
+    useEffect(() => {
+        let isUnmounted = false,
+            url = config.baseUrl + '/api/home/reviews/index?gid=' + gid + '&token=' + config.token + '&page=1';
+        const getReviewsDatas = async() => {
+            try{
+                const res = await getGoodsReviews(url);
+                if(res.code === 200 && !isUnmounted){
+                    setAReviews(_.get(res , ['data'] , []));
+                    setIReviewsTotal(_.get(res , ['pageinfo','total'] , 0));
+                }
+            }catch(err){
+                console.log('请求商品规格属性数据出错' , err)
+            }
+        }
+        getReviewsDatas();
+        return() => {
+            isUnmounted = true;
+        }
+    } , [gid])
+    //实现商品评价数据的图片懒加载
+    useEffect(() => {
+        lazyImg();
+    },[aReviews])
     //定义一个状态来存储加入购物车中的数量
     const [iAmount , setIAmount] = useState(1);
     useEffect(() => {
@@ -120,7 +137,6 @@ const DetailsItem = (props) => {
             pagination : targetPag,
             autoplayDisableOnInteraction : false,
         });
-        lazyImg();
     } , [aSlide])// eslint-disable-line react-hooks/exhaustive-deps
     //显示购物控制面板
     const showCartPanel = () =>{
@@ -268,34 +284,25 @@ const DetailsItem = (props) => {
                 </ul>
             </div>
             <div className='reviews-main2'>
-                <div className='reviews-title2'>商品评价(22)</div>
+                <div className='reviews-title2'>商品评价({iReviewsTotal})</div>
                 <div className='reviews-wrap2'>
-                    <div className='reviews-list'>
-                        <div className='uinfo'>
-                            <div className='head'><img src='' alt=''></img></div>
-                            <div className='nickname'>昵称</div>
-                        </div>
-                        <div className='reviews-content'>评价内容</div>
-                        <div className='reviews-date'>评价时间</div>
-                    </div>
-                    <div className='reviews-list'>
-                        <div className='uinfo'>
-                            <div className='head'><img src='' alt=''></img></div>
-                            <div className='nickname'>昵称</div>
-                        </div>
-                        <div className='reviews-content'>评价内容</div>
-                        <div className='reviews-date'>评价时间</div>
-                    </div>
-                    <div className='reviews-list'>
-                        <div className='uinfo'>
-                            <div className='head'><img src='' alt=''></img></div>
-                            <div className='nickname'>昵称</div>
-                        </div>
-                        <div className='reviews-content'>评价内容</div>
-                        <div className='reviews-date'>评价时间</div>
-                    </div>
+                    {
+                        aReviews.length > 0?
+                        aReviews.map((item , index) => {
+                            return(
+                                <div className='reviews-list' key={index}>
+                                    <div className='uinfo'>
+                                        <div className='head'><img src={require('../../../assets/images/common/lazyImg.jpg').default} alt={item.nickname} data-echo={item.head}></img></div>
+                                        <div className='nickname'>{item.nickname}</div>
+                                    </div>
+                                    <div className='reviews-content'>{item.content}</div>
+                                    <div className='reviews-date'>{item.times}</div>
+                                </div>
+                            )
+                        }):<div className='null-item'>没有相关评价</div>
+                    }
                 </div>
-                <div className='reviews-more' onClick={replacePage.bind(null , 'goods/details/reviews?gid=' + gid)}>更多评价</div>
+                <div className={aReviews.length>0?'reviews-more':'reviews-more hide'} onClick={replacePage.bind(null , 'goods/details/reviews?gid=' + gid)}>更多评价</div>
             </div>
             <div className='bottom-btn-wrap'>
                 <div className='btn fav' onClick={addFav.bind(null)}>收藏</div>

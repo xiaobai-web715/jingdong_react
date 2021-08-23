@@ -1,3 +1,10 @@
 .page2{
     margin-top:2.4rem;
 }
+
+.page2 .content{
+    width:90%;
+    margin:0 auto;
+    font-size:0.64rem;
+    line-height:1rem;
+}

@@ -1,3 +1,79 @@
 .page3{
     margin-top:2.4rem;
 }
+
+.page3 .reviews-main2{
+    margin-top:1rem;
+    width:100%;
+    background-color:#FFFFFF;
+    overflow:hidden;
+    padding-bottom:1rem;
+}
+
+.page3 .reviews-main2 .reviews-title2{
+    color:#7b7f82;
+    font-size:0.64rem;
+    width:90%;
+    margin:0 auto;
+    margin-top:0.4rem;
+}
+
+.page3 .reviews-main2 .reviews-wrap2{
+    width:90%;
+    margin:0 auto;
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list{
+    width:100%;
+    margin-top:0.8rem;
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list .uinfo{
+    width:100%;
+    display:flex;
+    height:1.2rem;
+    align-items:centeer;
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list .uinfo .head{
+   width:1.2rem;
+   height:1.2rem; 
+   margin-right:0.4rem;
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list .uinfo .head img{
+    width:100%;
+    height:100%; 
+    border-radius:100%; 
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list .uinfo .nickname{
+    width:auto;
+    font-size:0.56rem;
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list .reviews-content{
+    width:100%;
+    margin:0 auto;
+    font-size:0.56rem;
+    margin-top:0.4rem;
+}
+
+.page3 .reviews-main2 .reviews-wrap2 .reviews-list .reviews-date{
+    width:auto;
+    font-size:0.56rem;
+    color:#7b7f82;
+    margin-top:0.4rem;
+}
+
+.page3 .reviews-main2 .reviews-more{
+    width:4.88rem;
+    height:1.12rem;
+    border:1px solid #D50A17;
+    line-height:1.12rem;
+    text-align:center;
+    font-size:0.56rem;
+    margin:0 auto;
+    margin-top:1rem;
+    border-radius:0.2rem;
+}

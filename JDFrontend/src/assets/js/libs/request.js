@@ -116,4 +116,34 @@ const getGoodsSwiper = (pUrl , pType='GET') => {
     })
 }
 
-export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr , getGoodsSwiper};
+//获取商品规格属性数据
+const getGoodsAttr = (pUrl , pType='GET') => {
+
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+//获取商品评价数据
+const getGoodsReviews = (pUrl , pType='GET') => {
+
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+//获取商品详情数据
+const getDetails = (pUrl , pType='GET') => {
+
+    showLoad();
+    return fetch(pUrl , {method : pType}).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr , getGoodsSwiper , getGoodsAttr , getGoodsReviews , getDetails};
