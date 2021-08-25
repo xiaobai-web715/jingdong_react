@@ -27,7 +27,7 @@
     background-size:100%;
     background-repeat:no-repeat;
     background-position:center;
-    border:0 none;
+    border:1px solid #FFFFFF;
 }
 
 .cart-main .cart-list .image-wrap{
@@ -174,7 +174,7 @@
     background-size:100%;
     background-repeat:no-repeat;
     background-position:center;
-    border:0 none;
+    border:1px solid #FFFFFF;
 }
 
 .orderend-wrap .select-area .select-wrap .select-text{
@@ -190,6 +190,10 @@
     color:#FFFFFF;
     text-align:center;
     line-height:2rem;
+}
+
+.orderend-wrap .orderend-btn.disable{
+    background-color:#BFBFBF;
 }
 
 .orderend-wrap .select-area .total{

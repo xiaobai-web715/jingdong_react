@@ -1,4 +1,7 @@
 import React , {useEffect , useState} from 'react'
+//引入redux所需要的钩子
+import {useDispatch} from 'react-redux'
+import { setAddCart } from '../../../actions/addCartAction.js'
 import {findDOMNode} from 'react-dom'
 import {getGoodsSwiper , getGoodsAttr , getGoodsReviews} from '../../../assets/js/libs/request.js'
 import { localParam , setScrollTop  , lazyImg} from '../../../assets/js/utils/utils.js'
@@ -16,6 +19,7 @@ const DetailsItem = (props) => {
         targetCartPanel = null,
         bChoose = false,
         targetPag = null;
+    const dispatch = useDispatch();
     //不需要双向绑定的变量可以不用useState来创建,因为这个变量改变并不会立马刷新组件(通俗一点就是我的这个变量是在点击事件这样的函数里面执行的)
     const [gid , setGid] = useState('');
     const [bMask , setBMask] = useState(false);
@@ -193,7 +197,7 @@ const DetailsItem = (props) => {
         for(let i = 0 ; i < copyAAttrLen ; i++){
             let target = copyAAttr[i].values;
             //检测数组里面的每一项item中的checked值是不是都是false;如果都是false就执行提示功能,并且不会触发css动画旋转加入购物车的效果,并且直接return跳出
-            if(target.every(item => _.get(item , 'checked') === false)){
+            if(target.every(item => _.get(item , ['checked'] , false) === false)){
                 bChoose = true;
                 title = copyAAttr[i].title;
                 break;
@@ -249,6 +253,26 @@ const DetailsItem = (props) => {
                     //动画完成之后知直接销毁这个拷贝的元素,并且bChoose = true实现可以点击触发动画效果
                     oCloneImg.remove();
                     bChoose = false;
+
+                    //定义两个数组,用来保存选择的属性,并且用来组装attrs
+                    let attrs = [] , 
+                        params = [];
+                    if(aAttr.length > 0){
+                        for(let key in aAttr){
+                            //接下来组装params
+                            if(aAttr[key].values.length > 0){
+                                params = []
+                                for(let key_item in aAttr[key].values){
+                                    if(aAttr[key].values[key_item].checked){
+                                        params.push({paramid : aAttr[key].values[key_item].vid , title : aAttr[key].values[key_item].value})
+                                    }
+                                }
+                            }
+                            attrs.push({attrid : aAttr[key].attrid , title : aAttr[key].title , param : params});
+                        }
+                    }
+                    //动画完成之后将商品添加到redux里面
+                    dispatch(setAddCart({gid , title : sGoodsTitle , amount : iAmount , price : fPrice , img : aSlide[0] , checked : true , freight : fFreight , attrs : attrs}))
                 }});
                 //这里还是使用的TweenMax来做的动画特效
                 TweenMax.to(oCloneImg , 0.2 , {rotation : 360 , repeat: -1});  
