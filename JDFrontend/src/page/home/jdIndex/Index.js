@@ -1,6 +1,7 @@
 import React , {lazy , Suspense , useState , useEffect} from 'react';
 import  "../../../assets/css/common/Index/Index.css"
 import {Route , Switch} from 'react-router-dom'
+import {useSelector} from 'react-redux'
 import config from '../../../assets/js/conf/config'
 
 const HomeIndex = lazy(()=>import('../homeRouter/HomeIndex'))
@@ -20,6 +21,7 @@ const JDIndex = (props) => {
         // 如果用的是push的话，当点击同一个地方两次的时候，会有一个警告
         //这里必须加入这个config.path才不会出错(不加上的话，就会一直在前面添加根路径，也就是jd)(目前还不清楚为啥)
     }
+    const {aCartData} = useSelector(state => state.cartRedux)
     useEffect(()=>{
         let isUnmounted = false;
         if(!isUnmounted){
@@ -61,6 +63,7 @@ const JDIndex = (props) => {
                 <ul onClick={goPage.bind(null , 'jd/cart')}>
                     <li className={stateStyle.bCartStyle?'cart active' : 'cart'}></li>
                     <li className={stateStyle.bCartStyle?'text active' : 'text'}>购物</li>
+                    <li className={aCartData.length > 0 ?'spot' : 'spot hide'}></li>
                 </ul>
                 <ul onClick={goPage.bind(null , 'jd/user')}>
                     <li className={stateStyle.bUserStyle?'user active' : 'user'}></li>

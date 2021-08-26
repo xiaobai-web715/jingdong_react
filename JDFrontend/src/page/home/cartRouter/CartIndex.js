@@ -3,6 +3,8 @@ import { setDelCart } from '../../../actions/delCartAction'
 import { setCheckItem } from '../../../actions/checkItemAction'
 import { setAllChecked } from '../../../actions/allCheckedAction'
 import { setIncAmount } from '../../../actions/incAmountAction'
+import { setDecAmount } from '../../../actions/decAmountAction'
+import { setChangeAmount } from '../../../actions/changeAmountAction'
 import {useSelector , useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
 import '../../../assets/css/common/cart/cartIndex.css'
@@ -67,6 +69,25 @@ const CartIndex = () => {
             dispatch(setIncAmount({index}));
         }
     }
+    //减少商品的数量
+    const decAmount = (index) => {
+        if(aCartData.length > 0){
+            dispatch(setDecAmount({index}));
+        }
+    }
+    //手动修改商品的数量
+    const changeAmount = (e , index) =>{
+        if(aCartData.length > 0){
+            let iAmount = 1;
+            if(e.target.value !== ''){
+                iAmount = e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')
+                if(iAmount === ''){
+                    iAmount = 1;
+                }
+            }
+            dispatch(setChangeAmount({index , amount :iAmount}));
+        }
+    }
     return (
         <div>
             <Subheader title='购物车' right-text=''></Subheader>
@@ -104,8 +125,8 @@ const CartIndex = () => {
                                         <div className='price'>￥{item.price}</div>
 
                                             <div className='amount-input-wrap'>
-                                                <div className='dec active'>-</div>
-                                                <div className='amount-input'><input type='tel' value={item.amount} readOnly></input></div>
+                                                <div className={item.amount > 1?'dec':'dec active'} onClick={decAmount.bind(null , index)}>-</div>
+                                                <div className='amount-input'><input type='tel' value={item.amount} onChange={(e) => changeAmount(e , index)}></input></div>
                                                 <div className='inc' onClick={incAmount.bind(null , index)}>+</div>
                                             </div>
                                     </div>

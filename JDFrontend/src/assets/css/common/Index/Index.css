@@ -28,6 +28,8 @@
     width:1.4rem ; 
     height:1.4rem;
     margin:0 auto;
+    position:relative;
+    z-index:1;
 }
 
 .bottom-nav ul li.home{
@@ -79,4 +81,14 @@
 
 .bottom-nav ul li.active{
     color:#EB1625;
+}
+
+.bottom-nav ul li.spot{
+    width:0.4rem;
+    height:0.4rem;
+    background-color:#CC0004;
+    border-radius:100%;
+    position:absolute;
+    z-index:1;
+    top:0.3rem;
 }

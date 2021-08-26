@@ -1,6 +1,7 @@
 let cartData ={
     aCartData : localStorage['cartData'] !== undefined ? JSON.parse(localStorage['cartData']) : [],
     total : localStorage['total'] !== undefined ? JSON.parse(localStorage['total']) : 0,
+    freight : 0,
 }
 //封装一下计算总价的方法
 const setTotal = (state) => {
@@ -14,6 +15,17 @@ const setTotal = (state) => {
     // Math.round四舍五入的方法,.toFixed(2)保留两位小数
     state.total = parseInt(Math.round(total).toFixed(2));
     localStorage['total'] = JSON.stringify(state.total);
+}
+//封装一下计算最大运费的方法
+const setFreight = (state) => {
+    let aFreight = [];
+    for(let key in state.aCartData){
+        if(state.aCartData[key].checked){
+            aFreight.push(state.aCartData[key].freight);
+        }
+    }
+    state.freight = Math.max(...aFreight);
+    localStorage['freight'] = state.freight;
 }
 //添加商品
 const addCart = (state , action) =>{
@@ -32,6 +44,7 @@ const addCart = (state , action) =>{
     if(!choose){
         state.aCartData.push(action)
     }
+    setFreight(state);
     setTotal(state);
     localStorage['cartData'] = JSON.stringify(state.aCartData)
 }
@@ -39,12 +52,14 @@ const addCart = (state , action) =>{
 //删除商品的方法
 const delItem = (state , action) => {
     state.aCartData.splice(action.index , 1)
+    setFreight(state);
     setTotal(state);
     localStorage['cartData'] = JSON.stringify(state.aCartData)
 }
 //选择商品的方法
 const checkItem = (state , action) => {
     state.aCartData[action.index].checked = action.checked;
+    setFreight(state);
     setTotal(state)
     localStorage['cartData'] = JSON.stringify(state.aCartData)
 }
@@ -59,15 +74,36 @@ const allCheck = (state , action) => {
             state.aCartData[key].checked = false;
         }
     }
+    setFreight(state);
     setTotal(state)
     localStorage['cartData'] = JSON.stringify(state.aCartData)
 }
 
 //商品列表增加数量的方法
 const incAmount =  (state , action) => {
-    state.aCartData[action.index].amount += 1;
-    setTotal(state)
-    localStorage['cartData'] = JSON.stringify(state.aCartData)
+    //只有商品在选中的情况下才能够进行加减操作
+    if(state.aCartData[action.index].checked){
+        state.aCartData[action.index].amount += 1;
+        setTotal(state)
+        localStorage['cartData'] = JSON.stringify(state.aCartData)
+    }
+}
+//购物车列表里减少商品的方法
+const decAmount = (state , action) => {
+    //同样只有在商品选中情况下才能进行操作
+    if(state.aCartData[action.index].checked && state.aCartData[action.index].amount > 1){
+        state.aCartData[action.index].amount -= 1;
+        setTotal(state)
+        localStorage['cartData'] = JSON.stringify(state.aCartData)
+    }
+}
+//手动改变数量
+const changeAmount = (state , action) => {
+    if(state.aCartData[action.index].checked){
+        state.aCartData[action.index].amount = parseInt(action.amount);
+        setTotal(state)
+        localStorage['cartData'] = JSON.stringify(state.aCartData)
+    }
 }
 const cartRedux = (state = cartData , action) => {
    switch(action.type){
@@ -86,6 +122,12 @@ const cartRedux = (state = cartData , action) => {
             return Object.assign({} , state);
         case 'incAmount':
             incAmount(state , action.data);
+            return Object.assign({} , state);
+        case 'decAmount':
+            decAmount(state , action.data);
+            return Object.assign({} , state);
+        case 'changeAmount':
+            changeAmount(state , action.data);
             return Object.assign({} , state);
         default:
             return Object.assign({} , state);

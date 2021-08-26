@@ -1,4 +1,5 @@
 import React , {lazy , useState , useEffect} from 'react'
+import {useSelector} from 'react-redux'
 import {Route , Switch , Redirect} from 'react-router-dom'
 import { localParam } from '../../../assets/js/utils/utils'
 import config from '../../../assets/js/conf/config'
@@ -15,6 +16,7 @@ const Details = (props) => {
     const [gid , setGid] = useState('');
     //定义一个状态来管理导航的样式
     const [tabStyle , setTabStyle] = useState({bItem : true , bContent : false , bReviews : false})
+    const {aCartData} = useSelector(state => state.cartRedux)
     useEffect(() => {
         if(props.location.search !== ''){
             let targetGId = localParam(props.location.search);
@@ -59,7 +61,7 @@ const Details = (props) => {
                 </div>
                 {/* 这里不知道该如何通过route进行传值 */}
                 <div className='cart-icon' id='cart-icon' onClick={pushPage.bind(null , 'jd/cart')}>
-                    <div className='spot'></div>
+                    <div className={aCartData.length>0?'spot' : 'hide'}></div>
                 </div>
             </div>
             <div className='sub-page'>

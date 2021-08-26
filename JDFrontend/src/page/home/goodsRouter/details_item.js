@@ -272,12 +272,23 @@ const DetailsItem = (props) => {
                         }
                     }
                     //动画完成之后将商品添加到redux里面
-                    dispatch(setAddCart({gid , title : sGoodsTitle , amount : iAmount , price : fPrice , img : aSlide[0] , checked : true , freight : fFreight , attrs : attrs}))
+                    dispatch(setAddCart({gid , title : sGoodsTitle , amount : parseInt(iAmount) , price : fPrice , img : aSlide[0] , checked : true , freight : fFreight , attrs : attrs}))
                 }});
                 //这里还是使用的TweenMax来做的动画特效
                 TweenMax.to(oCloneImg , 0.2 , {rotation : 360 , repeat: -1});  
             }
         }) 
+    }
+    //改变商品数量的方法
+    const changeAmount = (e) => {
+        let iAmount = 1;
+        if(e.target.value !== ''){
+            iAmount = e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;]/g , '')
+            if(iAmount === ''){
+                iAmount = 1;
+            }
+        }
+        setIAmount(iAmount);
     }
     return (
         <div>
@@ -376,7 +387,7 @@ const DetailsItem = (props) => {
                     <div className='amount-name'>购买数量</div>
                     <div className='amount-input-wrap'>
                         <div className={iAmount > 1 ? 'dec' : 'dec active'} onClick={decAmount.bind(null)}>-</div>
-                        <div className='amount-input'><input type='tel' value={iAmount} onChange={e => setIAmount(e.target.value.replace(/[a-zA-Z]|[\u4e00-\u9fa5]|[#|*|,|+|;|.]/g , ''))}></input></div>
+                        <div className='amount-input'><input type='tel' value={iAmount} onChange={e => changeAmount(e)}></input></div>
                         <div className='inc' onClick={incAmount.bind(null)}>+</div>
                     </div>
                 </div>
