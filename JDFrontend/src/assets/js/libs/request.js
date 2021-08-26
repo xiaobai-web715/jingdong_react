@@ -146,4 +146,42 @@ const getDetails = (pUrl , pType='GET') => {
     })
 }
 
-export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr , getGoodsSwiper , getGoodsAttr , getGoodsReviews , getDetails};
+//将get和post请求封装在一起
+const request = (pUrl , pType = 'get'.toLocaleLowerCase() , data={}) => {
+    showLoad();
+    let config = {},
+        headers = {},
+        params = '';//params用来存储转成JSON格式后的数据 , headers用来存储请求头
+    if(pType === 'get'.toLocaleLowerCase()){
+        config = {
+            method : pType
+        }
+    }else{
+        //也就是post请求除了第二个对象参数中原本的method还要添加两个属性,一个是headers请求头,另一个params(传入的参数,不过这个参数要被转换为字符串拼接的样式)
+        //这里需要一个head头
+        headers = {
+            'Content-Type' : 'application/x-www-form-urlencoded'
+        }
+        if(data instanceof Object){
+            //要将传入的参数转成字符串拼接的格式
+            for(let key in data){
+                // encodeURIComponent()会将特殊的字符进行转义(就比如所空格、中文),这样后台就能够成功读取数据了
+                params+=`&${key}=${encodeURIComponent(data[key])}`
+            }
+            //第一个参数的前面不应该连接有&字符(截取指定位置字符串的方法,从索引位置1开始到之后,slice方法不会修改原来的字符串,但会返回指定索引位置的字符串)
+            params = params.slice(1)
+        }
+        // console.log(params)
+        config = {
+            method : pType,
+            headers, 
+            body:params,
+        }
+    }
+    return fetch(pUrl , config).then(res => {
+        hideLoad();
+        return res.json();
+    })
+}
+
+export {getSwiper , getNav , getGoodsLevel , getReco , getClassify , getGoods , getHotKeywords , getData , getClassifyAttr , getAttr , getGoodsSwiper , getGoodsAttr , getGoodsReviews , getDetails , request};
