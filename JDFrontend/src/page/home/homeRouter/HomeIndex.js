@@ -204,7 +204,7 @@ const HomeIndex = (props) => {
                         <div className = 'search-text'>请输入宝贝名称</div>
                     </div>
                     <div className = 'login-wrap'>
-                        <div className='login-text'>登录</div>
+                        <div className='login-text' onClick={pushPage.bind(null , 'login/index')}>登录</div>
                     </div>
                 </div>
             </div>

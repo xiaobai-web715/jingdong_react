@@ -11,6 +11,8 @@ const JDIndex = lazy(()=>import('./page/home/jdIndex/Index'))
 const ClassfiyIndex = lazy(() => import('./page/home/goodsRouter/ClassfiyIndex'))
 const SearchIndex = lazy(() => import('./page/home/goodsRouter/search'))
 const DetailsIndex = lazy(() => import('./page/home/goodsRouter/details'))
+const LoginIndex = lazy(() => import('./page/home/loginRouter/loginIndex'))
+const RegIndex = lazy(() => import('./page/home/regRouter/regIndex'))
 
 function RouterComponent() {
   return (
@@ -28,6 +30,8 @@ function RouterComponent() {
             <Route path = {config.path + 'goods/classify'}  component={ClassfiyIndex}></Route>
             <Route path = {config.path + 'goods/search'}  component={SearchIndex}></Route>
             <Route path = {config.path + 'goods/details'}  component={DetailsIndex}></Route>
+            <Route path = {config.path + 'login/index'}  component={LoginIndex}></Route>
+            <Route path = {config.path + 'reg/index'}  component={RegIndex}></Route>
             <Redirect to = {config.path +'jd/home'}></Redirect>
           </Switch>
         </Suspense>

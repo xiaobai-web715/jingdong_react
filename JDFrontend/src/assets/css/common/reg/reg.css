@@ -1,0 +1,107 @@
+.reg-page{
+    width:100%;
+    height:100vh;
+    background-color:#FFFFFF;
+}
+
+.reg-page .main{
+    width:100%;
+    padding-top:2.8rem;
+}
+
+.reg-page .main .cellphone-wrap{
+    width:90%;
+    height:1.68rem;
+    margin:0 auto;
+    border-radius:2px;
+    display:flex;
+    justify-content: space-between;
+}
+
+.reg-page .main .cellphone-wrap .cellphone{
+    width:62%;
+    height:100%;
+    border:#EFEFEF 1px solid;
+}
+
+.reg-page .main .cellphone-wrap .cellphone input{
+    width:95%;
+    height:100%;
+    font-size: 0.56rem;
+    margin-left:0.4rem;
+}
+
+.reg-page .main .cellphone-wrap .code-btn{
+    width:35%;
+    height:1.64rem;
+    background-color:#EAEAEA;
+    border:#EAEAEA 1px solid;
+    color:#717376;
+    border-radius:2px;
+    font-size:0.56rem;
+    text-align:center;
+    line-height:1.64rem;
+}
+
+.reg-page .main .cellphone-wrap .code-btn.active{
+    background:#FFFFFF;
+    border:1px solid #EB1625;
+    color:#EB1625;
+}
+
+.reg-page .main .code-wrap{
+    width:90%;
+    height:1.68rem;
+    margin:0 auto;
+    border-radius:2px;
+    border:1px solid #EAEAEA;
+    margin-top:0.8rem;
+}
+
+.reg-page .main .code-wrap input{
+    width:95%;
+    height:100%;
+    font-size: 0.56rem;
+    margin-left:0.4rem;
+}
+
+.reg-page .main .password-wrap{
+    width:90%;
+    height:1.68rem;
+    margin:0 auto;
+    border-radius:2px;
+    border:1px solid #EAEAEA;
+    margin-top:0.8rem;
+    display:flex;
+    justify-content: space-between;
+}
+
+.reg-page .main .password-wrap .password{
+    width:80%;
+    height:100%;
+}
+
+.reg-page .main .password-wrap .password input{
+    width:95%;
+    height:100%;
+    font-size: 0.56rem;
+    margin-left:0.4rem;
+}
+
+.reg-page .main .password-wrap .password .switch-wrap{
+    width:20%;
+    margin-top:0.2rem;
+}
+
+.reg-page .main .sure-btn{
+    width:85%;
+    height:1.6rem;
+    margin:0 auto;
+    background-color:#EB1625;
+    font-size:0.72rem;
+    color:#FFFFFF;
+    line-height:1.6rem;
+    text-align:center;
+    margin-top:0.8rem;
+    border-radius: 4px solid #EAEAEA;
+}
