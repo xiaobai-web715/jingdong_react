@@ -1,4 +1,5 @@
 import React , {useEffect , useState}from 'react'
+import {useSelector} from 'react-redux'
 import _ from 'lodash'
 //请求数据的方法
 import {getSwiper , getNav , getGoodsLevel , getReco} from '../../../assets/js/libs/request'
@@ -17,6 +18,7 @@ import Swiper from '../../../assets/js/libs/swiper.min.js'
 import Search from '../../../components/search/search'
 
 const HomeIndex = (props) => {
+    const {isLogin} = useSelector(state => state.loginRedux)
     const[dataSwiper ,  setDataSwiper] = useState([]);
     const[dataNav ,  setDataNav] = useState([]);
     const[dataGoodsLevel , setDataGoodsLevel] = useState([]);
@@ -204,7 +206,12 @@ const HomeIndex = (props) => {
                         <div className = 'search-text'>请输入宝贝名称</div>
                     </div>
                     <div className = 'login-wrap'>
-                        <div className='login-text' onClick={pushPage.bind(null , 'login/index')}>登录</div>
+                        {
+                            isLogin ? 
+                            /* 这里添加一个DOM元素,用来显示登录小图标,来区分是否登录上了,然后点击这个图标之后跳转到我的页面下*/
+                            <div className= 'my' onClick={pushPage.bind(null , 'jd/user')}></div>:
+                            <div className='login-text' onClick={pushPage.bind(null , 'login/index')}>登录</div>
+                        }
                     </div>
                 </div>
             </div>

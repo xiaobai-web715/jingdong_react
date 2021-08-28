@@ -1,4 +1,6 @@
 import React , {lazy , Suspense , useState , useEffect} from 'react';
+//引入private文件,路由的权限
+import { AuthRoute } from '../../../routes/Private'
 import  "../../../assets/css/common/Index/Index.css"
 import {Route , Switch} from 'react-router-dom'
 import {useSelector} from 'react-redux'
@@ -52,7 +54,8 @@ const JDIndex = (props) => {
                 <Switch>
                     <Route path = {config.path + 'jd/home'}  component={HomeIndex}></Route>
                     <Route path = {config.path + 'jd/cart'}  component={CartIndex}></Route>
-                    <Route path = {config.path + 'jd/user'}  component={UserIndex}></Route>
+                    {/* 这里将Route替换成AuthRoute */}
+                    <AuthRoute path = {config.path + 'jd/user'}  component={UserIndex}></AuthRoute>
                 </Switch>
             </Suspense>
             <div className ='bottom-nav'>

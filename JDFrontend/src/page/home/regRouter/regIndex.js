@@ -24,7 +24,7 @@ const RegIndex = (props) => {
     const [sPassword , setSPassword] = useState('')
     //定义一个状态来切换明码暗码
     const [sType , setSType] = useState('password')
-    //验证手机号是否正确输入
+    //输入改变时修改保存手机号的状态
     const checkCellphoe = (e) => {
         setSCellphone(e.target.value)
     }
@@ -66,6 +66,8 @@ const RegIndex = (props) => {
     }
     //防止切换页面所导致的内存泄露的问题,清除一下这个setInterval定时函数
     useEffect(() => {
+        //这行代码就是为了在切换页面时来改变title标题
+        document.getElementById('title').innerText = '会员注册'
         return () =>{
             clearInterval(timer);
         }
@@ -139,7 +141,6 @@ const RegIndex = (props) => {
     } 
     return (
         <div className='reg-page'>
-            会员注册页面
             <Subheader title='会员注册'></Subheader>
             <div className='main'>
                 <div className='cellphone-wrap'>
@@ -156,7 +157,7 @@ const RegIndex = (props) => {
                         <input type={sType} placeholder='请输入密码' onChange={e => setSPassword(e.target.value)}></input>
                     </div>
                     <div className='switch-wrap'>
-                        <Switch checked={checked} onClick={changePwd.bind(null , !checked)}></Switch>
+                        <Switch checked={checked} color='#EB1625' onClick={changePwd.bind(null , !checked)}></Switch>
                     </div>
                 </div>
                 <div className='sure-btn' onClick={submitData.bind(null)}>注册</div>

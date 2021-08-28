@@ -1,4 +1,6 @@
 import ReactDOM  from "react-dom";
+//这里引用的fetch是可以兼容低版本浏览器的方法
+import {fetch} from 'whatwg-fetch'
 // ReactDOM(虚拟dom)可以加快获取dom的速度
 let oLoad = ReactDOM.findDOMNode(document.getElementById('page-load'));
 // 显示正在加载的状态
@@ -178,6 +180,7 @@ const request = (pUrl , pType = 'get'.toLocaleLowerCase() , data={}) => {
             body:params,
         }
     }
+    // fetch这里用的fetch是高版本浏览器自带的,低版本要兼容的话要引入上面的
     return fetch(pUrl , config).then(res => {
         hideLoad();
         return res.json();

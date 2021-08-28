@@ -105,3 +105,18 @@
     margin-top:0.8rem;
     border-radius: 4px solid #EAEAEA;
 }
+
+.reg-page .main .fastreg-wrap{
+    margin:0 auto;
+    width:85%;
+    display:flex;
+    justify-content: space-between;
+    font-size:0.48rem;
+    margin-top:0.6rem;
+}
+
+.reg-page .main .fastreg-wrap img{
+    width:0.64rem;
+    height:0.64rem;
+    vertical-align:middle;
+}

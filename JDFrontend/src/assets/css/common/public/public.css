@@ -93,3 +93,9 @@ html , body{
 }
 
 
+/* 这样可以直接修改你引用的组件的样式,但是最好不要这样来修改 */
+/* .login .am-switch input[type="checkbox"]:checked + .checkbox{
+    background-color:#EB1625 !important;
+} */
+
+

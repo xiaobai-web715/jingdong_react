@@ -65,6 +65,16 @@
 
 }
 
+/* 登录小图标 */
+.search-header .login-wrap .my{
+    width:1.2rem;
+    height:1.2rem;
+    background-image: url('../../../images/home/index/my.png');
+    background-size:100%;
+    background-position: center;
+    background-repeat:no-repeat;
+}
+
 /* 幻灯片 */
 /* 使用的手机版的swiper组件 */
 .swiper-wrap{
