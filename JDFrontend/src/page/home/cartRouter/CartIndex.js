@@ -1,4 +1,5 @@
 import React , {useState , useEffect} from 'react'
+import config from '../../../assets/js/conf/config'
 import { setDelCart } from '../../../actions/delCartAction'
 import { setCheckItem } from '../../../actions/checkItemAction'
 import { setAllChecked } from '../../../actions/allCheckedAction'
@@ -9,7 +10,7 @@ import {useSelector , useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
 import '../../../assets/css/common/cart/cartIndex.css'
 
-const CartIndex = () => {
+const CartIndex = (props) => {
     const {aCartData , total} = useSelector(state => state.cartRedux)
     //点击删除删除购物车的商品
     const dispatch = useDispatch();
@@ -88,6 +89,13 @@ const CartIndex = () => {
             dispatch(setChangeAmount({index , amount :iAmount}));
         }
     }
+    //点击跳转到结算页面
+    const goBalance = () => {
+        //购物车商品被勾选(也就是总价有的时候)
+        if(total > 0){
+            props.history.push(config.path + 'balance/index')
+        }
+    }
     return (
         <div>
             <Subheader title='购物车' right-text=''></Subheader>
@@ -144,7 +152,7 @@ const CartIndex = () => {
                     </div>
                     <div className='total'>合计:<span>￥{total}</span></div>
                 </div>
-                <div className={total > 0 ?'orderend-btn' : 'orderend-btn disable'}>去结算</div>
+                <div className={total > 0 ?'orderend-btn' : 'orderend-btn disable'} onClick={goBalance.bind(null)}>去结算</div>
             </div>
         </div>
     )
