@@ -14,6 +14,8 @@ const DetailsIndex = lazy(() => import('./page/home/goodsRouter/details'))
 const LoginIndex = lazy(() => import('./page/home/loginRouter/loginIndex'))
 const RegIndex = lazy(() => import('./page/home/regRouter/regIndex'))
 const BalanceIndex = lazy(() => import('./page/home/balanceRouter/balanceIndex'))
+const AddressIndex = lazy(() => import('./page/home/address/index'))
+const AddressAdd = lazy(() => import('./page/home/address/add'))
 
 function RouterComponent() {
   return (
@@ -35,6 +37,8 @@ function RouterComponent() {
             <Route path = {config.path + 'reg/index'}  component={RegIndex}></Route>
             {/* 这里加了这个路由认证就不会路由跳转而导致页面闪抖了 */}
             <AuthRoute path = {config.path + 'balance/index'}  component={BalanceIndex}></AuthRoute>
+            <AuthRoute path = {config.path + 'address/index'}  component={AddressIndex}></AuthRoute>
+            <AuthRoute path = {config.path + 'address/add'}  component={AddressAdd}></AuthRoute>
             <Redirect to = {config.path +'jd/home'}></Redirect>s
           </Switch>
         </Suspense>

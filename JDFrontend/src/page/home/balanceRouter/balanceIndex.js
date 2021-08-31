@@ -2,6 +2,7 @@ import React from 'react'
 import {useSelector , useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
 import { safeAuth } from '../../../assets/js/utils/utils'
+import config from '../../../assets/js/conf/config'
 import '../../../assets/css/common/balance/index.css'
 import _ from 'lodash'
 
@@ -12,12 +13,15 @@ const BalanceIndex = (props) => {
     //确认订单页面也是需要登录之后才可以看到
     //所以也需要会员安全认证(但是这里用户体验会有点差,因为会页面闪一下,所以这就要使用自己写的路由组件AuthRoute,可以通过判断来选择是否加载该组件,这样就不会产生闪抖的页面了,不够这是对路由进行操作,详情请看router.js文件)
     safeAuth(uid , auth_token , props , dispatch)
+    const pushPage = (url) => {
+        props.history.push(config.path + url)
+    } 
     return (
         <div className='balance-page'>
             <Subheader title='确认订单'></Subheader>
             <div className='main'>
                 {/* 地址区域 */}
-                <div className='address-wrap'>
+                <div className='address-wrap' onClick={pushPage.bind(null , 'address/index')}>
                     <div className='persion-info'>
                         <span>收货人:刘兴华</span><span>手机号:18315963987</span>
                     </div>
