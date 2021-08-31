@@ -1,6 +1,8 @@
 import React from 'react'
 import {Route , Redirect} from 'react-router-dom'
 import config from '../assets/js/conf/config'
+// !!!下面的这个封装解决了页面切换路由的屏幕闪抖问题
+
 
 // component : Component(component就是父组件中传过来的props里面的值,然后这个值它是一个组件形式的,所以赋值给了以开头字母大写的变量)
 export function AuthRoute({component : Component , ...rest}){

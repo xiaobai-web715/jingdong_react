@@ -144,6 +144,10 @@
     margin-top:0.2rem;
 }
 
+.balance-page .goods-wrap .goods-list .goods-param .attr span{
+    margin-right:0.6rem;
+}
+
 .balance-page .goods-wrap .goods-list .goods-param .amount{
     font-size:0.48rem;
     color:#868686;

@@ -1,7 +1,7 @@
 let cartData ={
     aCartData : localStorage['cartData'] !== undefined ? JSON.parse(localStorage['cartData']) : [],
-    total : localStorage['total'] !== undefined ? JSON.parse(localStorage['total']) : 0,
-    freight : 0,
+    total : localStorage['total'] !== undefined ? parseFloat(localStorage['total']) : 0,
+    freight : localStorage['freight'] !== undefined ?parseFloat(localStorage['freight']) : 0,
 }
 //封装一下计算总价的方法
 const setTotal = (state) => {

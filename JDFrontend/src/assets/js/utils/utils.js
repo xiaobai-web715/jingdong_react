@@ -46,8 +46,10 @@ const setScrollTop = (val) => {
 const safeAuth = (uid , authToken , props , dispatch) => {
     let sUrl = config.baseUrl + '/api/home/user/safe?token=' + config.token;
     try{
+        // 这样写就是获得了一个promise对象
+        // let a = request(sUrl , 'post' , {uid})
         request(sUrl , 'post' , {uid , auth_token : authToken}).then(res => {
-            console.log('res' , res)
+            // console.log('res' , res)
             if(res.code !== 200){
                 //这里只要没访问权限,就会触发这个redux将localStorage里面的数据状态清空
                 // (像这种写成函数的形式而不是react组件的样式,是不能够直接在这里面引用钩子hook的,多以我外面创建好的dispatch当做参数传进来了,目前来看是可行的)

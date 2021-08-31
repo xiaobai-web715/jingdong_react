@@ -45,6 +45,7 @@ const LoginIndex = (props) => {
         //当手机号码格式正确以及密码输入之后,请求接口
         let sUrl = config.baseUrl + '/api/home/user/pwdlogin?token=' + config.token;
         request(sUrl , 'post' , {cellphone : sCellphone , password : sPassword}).then(res => {
+            // console.log('res登录匹配账户信息' , res)
             if(res.code === 200){
                 //当手机号和密码正确的时候,会登录,当涉及到登录的时候就有权限的问题;当登录完成之后会将用户名和密码放到缓存(这里的这个缓存指的是redux与localStorage做配合使用,redux在不刷新页面的情况下,所有组件都可以使用,但是刷新之后数据会消失,所以还要结合一下localStorage来存储会员信息,就像购物车那部分)里面,好做权限
                 //下面就是往localStorage里面存储会员的信息

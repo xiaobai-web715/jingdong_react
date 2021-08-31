@@ -5,7 +5,7 @@ import {HashRouter as Router , Route , Switch , Redirect} from 'react-router-dom
 
 import  "./assets/css/common/public/public.css"
 import config from './assets/js/conf/config'
-// console.log(config)
+import { AuthRoute } from './routes/Private';
 
 const JDIndex = lazy(()=>import('./page/home/jdIndex/Index'))
 const ClassfiyIndex = lazy(() => import('./page/home/goodsRouter/ClassfiyIndex'))
@@ -33,8 +33,9 @@ function RouterComponent() {
             <Route path = {config.path + 'goods/details'}  component={DetailsIndex}></Route>
             <Route path = {config.path + 'login/index'}  component={LoginIndex}></Route>
             <Route path = {config.path + 'reg/index'}  component={RegIndex}></Route>
-            <Route path = {config.path + 'balance/index'}  component={BalanceIndex}></Route>
-            <Redirect to = {config.path +'jd/home'}></Redirect>
+            {/* 这里加了这个路由认证就不会路由跳转而导致页面闪抖了 */}
+            <AuthRoute path = {config.path + 'balance/index'}  component={BalanceIndex}></AuthRoute>
+            <Redirect to = {config.path +'jd/home'}></Redirect>s
           </Switch>
         </Suspense>
       </Router>
