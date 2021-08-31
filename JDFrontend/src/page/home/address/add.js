@@ -30,7 +30,7 @@ const AddressAdd = (props) => {
             return;
         }
         //验证手机号格式是否正确
-        if(!sCellphone .match(/^1[0-9][0-9]{9}/)){
+        if(!sCellphone.match(/^1[0-9][0-9]{9}/)){
             Toast.info('你输入的手机号格式不正确' , 2);
             return;
         }
