@@ -9,10 +9,10 @@ import './assets/js/conf/global.js'
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <>
     <App/>
     {/* <RouterComponent /> */}
-  </React.StrictMode>,
+  </>,
   document.getElementById('root')
 );
 
