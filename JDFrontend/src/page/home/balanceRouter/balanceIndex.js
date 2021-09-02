@@ -1,8 +1,9 @@
-import React from 'react'
+import React , {useEffect} from 'react'
 import {useSelector , useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
 import { safeAuth } from '../../../assets/js/utils/utils'
 import config from '../../../assets/js/conf/config'
+import { request } from '../../../assets/js/libs/request'
 import '../../../assets/css/common/balance/index.css'
 import _ from 'lodash'
 
@@ -16,6 +17,17 @@ const BalanceIndex = (props) => {
     const pushPage = (url) => {
         props.history.push(config.path + url)
     } 
+    useEffect(() => {
+        getAddress();
+    } , [])// eslint-disable-line react-hooks/exhaustive-deps
+    //获取收货地址
+    const getAddress = async() => {
+        if(sessionStorage['addressId'] !== undefined){
+            let sUrl = config.baseUrl + '/api/user/address/info?uid=' + uid + '&aid=' + sessionStorage['addressId'] + '&token='+config.token
+            let res = await request(sUrl);
+            console.log('res' , res)
+        }
+    }
     return (
         <div className='balance-page'>
             <Subheader title='确认订单'></Subheader>

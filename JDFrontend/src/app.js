@@ -6,7 +6,7 @@ import {Provider} from 'react-redux'
 import {createStore} from 'redux'
 
 const App = () => {
-    //3存入仓库
+    //3存入仓库(这里在创建store的时候可以另起一个单独的文件,以便于saga中间件的使用)
     const store = createStore(reducer);
     return (
         <Provider store={store}>
