@@ -44,7 +44,7 @@ const AddressIndex = (props) => {
     } , []) // eslint-disable-line react-hooks/exhaustive-deps
     //点击选择收货地址
     const selectAddress = (aid) => {
-        // sessionStorage是一个长期的临时存储,当我关闭浏览器的时候,我的sessionStorage里面的数据默认就清空了
+        // sessionStorage是一个长期的临时存储,当我退出的时候相应的也要去清空这里面的缓存
         sessionStorage['addressId'] = aid;
         props.history.replace(config.path + 'balance/index')
     }

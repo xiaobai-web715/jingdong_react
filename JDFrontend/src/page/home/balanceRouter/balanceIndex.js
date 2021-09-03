@@ -1,4 +1,4 @@
-import React , {useEffect} from 'react'
+import React , {useState , useEffect} from 'react'
 import {useSelector , useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
 import { safeAuth } from '../../../assets/js/utils/utils'
@@ -8,6 +8,13 @@ import '../../../assets/css/common/balance/index.css'
 import _ from 'lodash'
 
 const BalanceIndex = (props) => {
+    //定义几个状态来存储收货人、手机号等信息
+    const [sName , setSName] = useState('')
+    const [sCellphone , setSCellphone] = useState('')
+    const [sProvince , setSProvince] = useState('')
+    const [sCity , setSCity] = useState('')
+    const [sArea , setSArea] = useState('')
+    const [sAddress , setSAddress] = useState('')
     const {aCartData , total , freight} = useSelector(state => state.cartRedux)
     const {uid , authToken : auth_token} = useSelector(state => state.loginRedux)
     const dispatch = useDispatch();
@@ -15,7 +22,7 @@ const BalanceIndex = (props) => {
     //所以也需要会员安全认证(但是这里用户体验会有点差,因为会页面闪一下,所以这就要使用自己写的路由组件AuthRoute,可以通过判断来选择是否加载该组件,这样就不会产生闪抖的页面了,不够这是对路由进行操作,详情请看router.js文件)
     safeAuth(uid , auth_token , props , dispatch)
     const pushPage = (url) => {
-        props.history.push(config.path + url)
+        props.history.replace(config.path + url)
     } 
     useEffect(() => {
         getAddress();
@@ -25,7 +32,14 @@ const BalanceIndex = (props) => {
         if(sessionStorage['addressId'] !== undefined){
             let sUrl = config.baseUrl + '/api/user/address/info?uid=' + uid + '&aid=' + sessionStorage['addressId'] + '&token='+config.token
             let res = await request(sUrl);
-            console.log('res' , res)
+            if(res.code === 200){
+                setSName(_.get(res , ['data' , 'name']))
+                setSAddress(_.get(res , ['data' , 'address']))
+                setSCellphone(_.get(res , ['data' , 'cellphone']))
+                setSProvince(_.get(res , ['data' , 'province']))
+                setSCity(_.get(res , ['data' , 'city']))
+                setSArea(_.get(res , ['data' , 'area']))
+            }
         }
     }
     return (
@@ -34,13 +48,19 @@ const BalanceIndex = (props) => {
             <div className='main'>
                 {/* 地址区域 */}
                 <div className='address-wrap' onClick={pushPage.bind(null , 'address/index')}>
-                    <div className='persion-info'>
-                        <span>收货人:刘兴华</span><span>手机号:18315963987</span>
-                    </div>
-                    <div className='address'>
-                        <img src={require('../../../assets/images/home/cart/map.png').default} alt='收货地址'></img>
-                        <span>中国石油大学(北京)</span>
-                    </div>
+                    {
+                        sessionStorage['addressId'] !== undefined ? 
+                        <>
+                            <div className='persion-info'>
+                            <span>收货人:{sName}</span><span>手机号:{sCellphone}</span>
+                            </div>
+                            <div className='address'>
+                                <img src={require('../../../assets/images/home/cart/map.png').default} alt='收货地址'></img>
+                                <span>{sProvince}{sCity}{sArea}{sAddress}</span>
+                            </div>
+                        </>:<div className='address-null'>您的收货地址为空,请选择收货地址</div>
+                        // 上面这行添加的代码是每次我安全退出之后,会清掉sessionStorage里面的缓存,这就导致我在初始挂载的时候请求收货地址的操作无法返回数据,所以下面这行DOM就是用来提示,但我个人觉得每次进来的数据就是应该是你的默认收货地址
+                    }
                     <div className='arrow'></div>
                     <div className='address-border-wrap'>
                         <div className='trapezoid style1'></div>

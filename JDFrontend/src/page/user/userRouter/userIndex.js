@@ -4,6 +4,7 @@ import { request } from '../../../assets/js/libs/request';
 import {useSelector , useDispatch} from 'react-redux'
 import config from '../../../assets/js/conf/config'
 import { setOutLogin } from '../../../actions/outLoginAction';
+import { setClearCart } from '../../../actions/clearCartAction';
 
 const UserRouter = (props) => {
     //在这里我们要实现一个需求只有在登录的时候才能看到我的这个界面,不登录的时候点击我的直接跳转到登录页面(这个是对路由那里进行操作,可以转到jdIndex文件看一下)
@@ -34,7 +35,9 @@ const UserRouter = (props) => {
         let sUrl = config.baseUrl + 'api/home/user/safeout?token='+config.token;
         request(sUrl , 'post' , {uid}).then(res =>{
             if(res.code === 200){
+                //安全退出的时候,除了要触发清空用户登录信息的localStorage的数据之外,还要去清空用户购物车里面的数据(不过目前是我们的数据还没有存入后端中,还不清楚怎样去解决)
                 dispatch(setOutLogin())
+                dispatch(setClearCart())
                 props.history.replace(config.path + 'login/index')
             }
         })

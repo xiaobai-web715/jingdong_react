@@ -3,6 +3,7 @@ import echo from '../libs/echo';
 import config from '../../../assets/js/conf/config'
 import { setOutLogin } from '../../../actions/outLoginAction';
 import { request } from '../../../assets/js/libs/request';
+import { setClearCart } from '../../../actions/clearCartAction';
 
 //图片懒加载的方法
 function lazyImg(){
@@ -53,7 +54,9 @@ const safeAuth = (uid , authToken , props , dispatch) => {
             if(res.code !== 200){
                 //这里只要没访问权限,就会触发这个redux将localStorage里面的数据状态清空
                 // (像这种写成函数的形式而不是react组件的样式,是不能够直接在这里面引用钩子hook的,多以我外面创建好的dispatch当做参数传进来了,目前来看是可行的)
+                //安全退出触发redux的操作来清空用户信息和购物车里面的存储在redux和localStorage里面的数据
                 dispatch(setOutLogin())
+                dispatch(setClearCart())
                 //直接将页面跳转到登录页面
                 props.history.replace(config.path + 'login/index')
             }

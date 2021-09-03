@@ -19,6 +19,8 @@ const loginRedux = (state = defaultState , action) => {
             localStorage.removeItem('nickname')
             localStorage.removeItem('authToken')
             localStorage.removeItem('isLogin')
+            //安全退出的时候清空sessionStorage
+            sessionStorage.removeItem('addressId')
             //清空redux里面的缓存
             state.uid = '';
             state.nickname = '';

@@ -81,6 +81,18 @@
     font-size:0.48rem;
 }
 
+.balance-page .main .address-wrap .address-null{
+    width:auto;
+    height:auto;
+    font-size:0.56rem;
+    position:absolute;
+    z-index:1;
+    left:50%;
+    top:0;
+    transform:translateX(-50%);
+    margin-top:1rem;
+}
+
 .balance-page .main .address-wrap .arrow{
     width:0.64rem;
     height:0.64rem;
@@ -126,7 +138,7 @@
 
 .balance-page .goods-wrap .goods-list .goods-param .title{
     width:100%;
-    height:0.8rem;
+    height:1rem;
     font-size:0.56rem;
     /* 文字溢出省略号的3个条件 */
     overflow:hidden;

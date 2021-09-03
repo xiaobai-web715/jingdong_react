@@ -105,6 +105,16 @@ const changeAmount = (state , action) => {
         localStorage['cartData'] = JSON.stringify(state.aCartData)
     }
 }
+//清空购物车
+const clearCart = (state , action) => {
+    //先清掉localSotorage里面的数据,然后return的state也全部置空
+    localStorage.removeItem('cartData')
+    localStorage.removeItem('total')
+    localStorage.removeItem('freight')
+    state.aCartData = []
+    state.total = 0
+    state.freight = 0
+}
 const cartRedux = (state = cartData , action) => {
    switch(action.type){
        case 'addCart':
@@ -129,6 +139,9 @@ const cartRedux = (state = cartData , action) => {
         case 'changeAmount':
             changeAmount(state , action.data);
             return Object.assign({} , state);
+        case 'clearCart':
+            clearCart(state , action.data)
+            return Object.assign({} , state)
         default:
             return Object.assign({} , state);
    } 
