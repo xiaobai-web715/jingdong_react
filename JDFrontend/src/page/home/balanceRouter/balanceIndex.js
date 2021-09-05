@@ -21,15 +21,20 @@ const BalanceIndex = (props) => {
     //确认订单页面也是需要登录之后才可以看到
     //所以也需要会员安全认证(但是这里用户体验会有点差,因为会页面闪一下,所以这就要使用自己写的路由组件AuthRoute,可以通过判断来选择是否加载该组件,这样就不会产生闪抖的页面了,不够这是对路由进行操作,详情请看router.js文件)
     safeAuth(uid , auth_token , props , dispatch)
-    const pushPage = (url) => {
+    const replacePage = (url) => {
+        //这样上一个历史url就一直是购物车界面的url,这里用作push的话就是你再次点击选择收货地址,还是会push进去一个历史url,这样就会导致重复的url被当做历史,表现出来的情况就是我点击返回还是在这个页面待着
         props.history.replace(config.path + url)
     } 
     useEffect(() => {
-        getAddress();
+        if(sessionStorage['addressId'] !== undefined){
+            getAddress();
+        }else{
+            getDefaultAddress();
+        }
+
     } , [])// eslint-disable-line react-hooks/exhaustive-deps
     //获取收货地址
     const getAddress = async() => {
-        if(sessionStorage['addressId'] !== undefined){
             let sUrl = config.baseUrl + '/api/user/address/info?uid=' + uid + '&aid=' + sessionStorage['addressId'] + '&token='+config.token
             let res = await request(sUrl);
             if(res.code === 200){
@@ -40,6 +45,20 @@ const BalanceIndex = (props) => {
                 setSCity(_.get(res , ['data' , 'city']))
                 setSArea(_.get(res , ['data' , 'area']))
             }
+    }
+    //获取默认收货地址
+    const getDefaultAddress = async() => {
+        let sUrl = config.baseUrl + '/api/user/address/defaultAddress?uid=' + uid + '&token=' + config.token;
+        let res = await request(sUrl);
+        if(res.code === 200){
+            //这里加了localStorage就要在退出登录的时候去掉这个缓存
+            localStorage['addressId'] = res.data.aid;
+            setSName(_.get(res , ['data' , 'name']))
+            setSAddress(_.get(res , ['data' , 'address']))
+            setSCellphone(_.get(res , ['data' , 'cellphone']))
+            setSProvince(_.get(res , ['data' , 'province']))
+            setSCity(_.get(res , ['data' , 'city']))
+            setSArea(_.get(res , ['data' , 'area']))
         }
     }
     return (
@@ -47,9 +66,9 @@ const BalanceIndex = (props) => {
             <Subheader title='确认订单'></Subheader>
             <div className='main'>
                 {/* 地址区域 */}
-                <div className='address-wrap' onClick={pushPage.bind(null , 'address/index')}>
+                <div className='address-wrap' onClick={replacePage.bind(null , 'address/index')}>
                     {
-                        sessionStorage['addressId'] !== undefined ? 
+                        sessionStorage['addressId'] !== undefined || localStorage['addressId'] !== undefined ? 
                         <>
                             <div className='persion-info'>
                             <span>收货人:{sName}</span><span>手机号:{sCellphone}</span>

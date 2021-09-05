@@ -62,7 +62,13 @@ const AddressAdd = (props) => {
             let res = await request(url , 'post' , data)
             if(res.code === 200){
                 Toast.info('添加成功' , 2 , ()=>{
-                    props.history.replace(config.path + 'address/index')
+                    // props.history.replace(config.path + 'address/index')
+                    // 视频中讲解说是跳转的话容易出问题,所以就是返回上一级吗,就直接goBack就可以
+                    if(bChecked){
+                        //当我添加的这个地址是默认地址的话,就会清掉点击选择地址所缓存在sessionStorage里面的数据,这样重新回到购物车页面挂载组件就行请求的默认地址,就是你新设置的这个（然后那里会存一个localStorage以便DOM的展示,当你点击选择的时候就会在sessionStorage里面存一个，这时sessionStorage['addressId']就不是undefined,所以请求的就是收货地址的函数）
+                        sessionStorage.removeItem('addressId')
+                    }
+                    props.history.goBack();
                 })
             }
         }catch(err){

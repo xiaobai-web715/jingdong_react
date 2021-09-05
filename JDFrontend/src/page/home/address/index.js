@@ -25,6 +25,12 @@ const AddressIndex = (props) => {
                 let sUrl = config.baseUrl + '/api/user/address/del?uid=' + uid + '&aid=' + aid + '&token=' + config.token;
                 request(sUrl).then(res => {
                     Toast.info('删除成功' , 2)
+                    if(aid === sessionStorage['addressId']){
+                        sessionStorage.removeItem('addressId')
+                    }
+                    if(aid === localStorage['addressId']){
+                        localStorage.removeItem('addressId')
+                    }
                 });
             }},
         ]);
@@ -84,7 +90,7 @@ const AddressIndex = (props) => {
                                 </div>
                             </div>
                         )
-                    }):''
+                    }):<div className='null-item'>您还没有添加收货地址!</div>
                 }
             </div>
         </div>
