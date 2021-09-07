@@ -17,6 +17,7 @@ const BalanceIndex = lazy(() => import('./page/home/balanceRouter/balanceIndex')
 const AddressIndex = lazy(() => import('./page/home/address/index'))
 const AddressAdd = lazy(() => import('./page/home/address/add'))
 const AddressMod = lazy(() => import('./page/home/address/mod'))
+const BalanceEnd = lazy(() => import('./page/home/balanceRouter/endIndex'))
 
 function RouterComponent() {
   return (
@@ -43,6 +44,8 @@ function RouterComponent() {
             <AuthRoute path = {config.path + 'address/add'}  component={AddressAdd}></AuthRoute>
             {/* 修改收货地址 */}
             <AuthRoute path = {config.path + 'address/mod'}  component={AddressMod}></AuthRoute>
+            {/* 订单结束页面 */}
+            <AuthRoute path = {config.path + 'balance/end'}  component={BalanceEnd}></AuthRoute>
             <Redirect to = {config.path +'jd/home'}></Redirect>
           </Switch>
         </Suspense>

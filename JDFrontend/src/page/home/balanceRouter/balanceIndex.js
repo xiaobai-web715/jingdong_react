@@ -27,21 +27,21 @@ const BalanceIndex = (props) => {
         props.history.replace(config.path + url)
     } 
     useEffect(() => {
-        let isUnmounted = false;
+        let obj = {isUnmounted : false};
         if(sessionStorage['addressId'] !== undefined){
-            getAddress(isUnmounted);
+            getAddress(obj);
         }else{
-            getDefaultAddress(isUnmounted);
+            getDefaultAddress(obj);
         }
         return () => {
-            isUnmounted = true
+            obj.isUnmounted = true;
         }
     } , [])// eslint-disable-line react-hooks/exhaustive-deps
     //获取收货地址
-    const getAddress = async(isUnmounted) => {
+    const getAddress = async(obj) => {
             let sUrl = config.baseUrl + '/api/user/address/info?uid=' + uid + '&aid=' + sessionStorage['addressId'] + '&token='+config.token
             let res = await request(sUrl);
-            if(res.code === 200 && !isUnmounted){
+            if(res.code === 200 && !obj.isUnmounted){
                 setSName(_.get(res , ['data' , 'name']))
                 setSAddress(_.get(res , ['data' , 'address']))
                 setSCellphone(_.get(res , ['data' , 'cellphone']))
@@ -51,10 +51,10 @@ const BalanceIndex = (props) => {
             }
     }
     //获取默认收货地址
-    const getDefaultAddress = async(isUnmounted) => {
+    const getDefaultAddress = async(obj) => {
         let sUrl = config.baseUrl + '/api/user/address/defaultAddress?uid=' + uid + '&token=' + config.token;
         let res = await request(sUrl);
-        if(res.code === 200 && !isUnmounted){
+        if(res.code === 200&&!obj.isUnmounted){
             //这里加了localStorage所以就要在退出登录的时候去掉这个缓存
             localStorage['addressId'] = res.data.aid;
             setSName(_.get(res , ['data' , 'name']))
@@ -65,12 +65,30 @@ const BalanceIndex = (props) => {
             setSArea(_.get(res , ['data' , 'area']))
         }
     }
+    //定义一个变量用来防止多次提交的操作
+    let bSubmit = true;
     //提交收货地址
-    const submitOrder = () => {
+    const submitOrder = async() => {
         let sAddressId = sessionStorage['addressId'] || localStorage['addressId']
         if(sAddressId !== undefined){
             if(total > 0){
-
+                if(bSubmit){
+                    bSubmit = false;
+                    let sUrl = config.baseUrl + '/api/order/add?token=' + config.token;
+                    let jData = {
+                        uid,
+                        freight,
+                        addsid : sAddressId,
+                        goodsData : JSON.stringify(aCartData)
+                    }
+                    let res = await request(sUrl , 'post' , jData)
+                    if(res.code === 200){
+                        Toast.info('提交成功' , 2 , () => {
+                            props.history.push(config.path + 'balance/end')
+                        })
+                        // setTimeout(props.history.push.bind(null , config.path + 'balance/end') , 2100)
+                    }
+                }
             }else{
                 Toast.info('您还没有选择商品' , 2)
             }

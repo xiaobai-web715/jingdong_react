@@ -1,0 +1,37 @@
+.balance_end-page{
+    width:100%;
+    min-height:100vh;
+    background-color:#FFFFFF;
+    overflow: hidden;
+}
+
+.balance_end-page .main{
+    width:100%;
+    margin-top:2.4rem;
+}
+
+.balance_end-page .main .list{
+    width : 100%;
+    font-size:0.64rem;
+    text-align:center;
+    margin-bottom:0.4rem;
+}
+.balance_end-page .main .list.success{
+    color:#E51B16;
+}
+
+.balance_end-page .main .list.ordernum{
+    color:#F17F1F;
+}
+
+.balance_end-page .main .pay-btn{
+    width:6.4rem;
+    height:1.2rem;
+    line-height:1.2rem;
+    font-size:0.64rem;
+    color:#FFFFFF;
+    text-align:center;
+    margin:0 auto;
+    background-color:#0a8ddf;
+    border-radius:4px;
+}

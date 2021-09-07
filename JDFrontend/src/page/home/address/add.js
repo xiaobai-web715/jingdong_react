@@ -20,6 +20,7 @@ const AddressAdd = (props) => {
     const[bChecked , setBChecked] = useState(false)
     const{uid} = useSelector(state => state.loginRedux)
     // 提交数据到后台
+    let bSubmit = true;
     const submitData = async() => {
         if(sName.match(/^\s*$/)){
             Toast.info('请输入收货人姓名' , 2);
@@ -59,17 +60,21 @@ const AddressAdd = (props) => {
         // request(url , 'post' , data).then(res => console.log(res))
         // 另一种方式就是用async和await
         try{
-            let res = await request(url , 'post' , data)
-            if(res.code === 200){
-                Toast.info('添加成功' , 2 , ()=>{
-                    // props.history.replace(config.path + 'address/index')
-                    // 视频中讲解说是跳转的话容易出问题,所以就是返回上一级吗,就直接goBack就可以
-                    if(bChecked){
-                        //当我添加的这个地址是默认地址的话,就会清掉点击选择地址所缓存在sessionStorage里面的数据,这样重新回到购物车页面挂载组件就行请求的默认地址,就是你新设置的这个（然后那里会存一个localStorage以便DOM的展示,当你点击选择的时候就会在sessionStorage里面存一个，这时sessionStorage['addressId']就不是undefined,所以请求的就是收货地址的函数）
-                        sessionStorage.removeItem('addressId')
-                    }
-                    props.history.goBack();
-                })
+            //防止网速过慢所造成的重复多次提交
+            if(bSubmit){
+                bSubmit = false;
+                let res = await request(url , 'post' , data)
+                if(res.code === 200){
+                    Toast.info('添加成功' , 2 , ()=>{
+                        // props.history.replace(config.path + 'address/index')
+                        // 视频中讲解说是跳转的话容易出问题,所以就是返回上一级吗,就直接goBack就可以
+                        if(bChecked){
+                            //当我添加的这个地址是默认地址的话,就会清掉点击选择地址所缓存在sessionStorage里面的数据,这样重新回到购物车页面挂载组件就行请求的默认地址,就是你新设置的这个（然后那里会存一个localStorage以便DOM的展示,当你点击选择的时候就会在sessionStorage里面存一个，这时sessionStorage['addressId']就不是undefined,所以请求的就是收货地址的函数）
+                            sessionStorage.removeItem('addressId')
+                        }
+                        props.history.goBack();
+                    })
+                }
             }
         }catch(err){
             console.log('提交地址请求出错' , err)

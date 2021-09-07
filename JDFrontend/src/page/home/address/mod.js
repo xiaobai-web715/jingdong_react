@@ -26,8 +26,8 @@ const AddressMod = (props) => {
     //获取url?后面的部分的方法
     const aid = localParam(props.location.search).search.aid;
     //获取收货地址信息
-    const getAddress = async(isUnmounted) => {
-        if(!isUnmounted){
+    const getAddress = async(obj) => {
+        if(!obj.isUnmounted){
             try{
                 let url = config.baseUrl + '/api/user/address/info?uid=' + uid + '&aid=' + aid + '&token=' + config.token
                 const res = await request(url);
@@ -47,10 +47,10 @@ const AddressMod = (props) => {
         }
     }
     useEffect(() => {
-        let isUnmounted = false;
-        getAddress(isUnmounted)
+        let obj = {isUnmounted : false};
+        getAddress(obj)
         return () => {
-            isUnmounted = true;
+            obj.isUnmounted = true;
         }
     } , [])// eslint-disable-line react-hooks/exhaustive-deps
     // 提交数据到后台

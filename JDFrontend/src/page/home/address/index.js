@@ -38,18 +38,18 @@ const AddressIndex = (props) => {
         e.stopPropagation();
     }
     //获取收货地址列表
-    const getAddress = async(isUnmounted) => {
+    const getAddress = async(obj) => {
         let sUrl = config.baseUrl + '/api/user/address/index?uid='+uid + '&token=' + config.token;
         let res = await request(sUrl)
-        if(res.code === 200 && !isUnmounted){
+        if(res.code === 200 && !obj.isUnmounted){
             setAAddress(_.get(res , ['data'] , []));
         }
     }
     useEffect(() => {
-        let isUnmounted = false;
-        getAddress(isUnmounted);
+        let obj = {isUnmounted : false};
+        getAddress(obj);
         return () => {
-            isUnmounted = true;
+            obj.isUnmounted = true;
         }
     } , []) // eslint-disable-line react-hooks/exhaustive-deps
     //点击选择收货地址

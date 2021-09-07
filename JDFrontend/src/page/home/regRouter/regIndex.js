@@ -73,6 +73,7 @@ const RegIndex = (props) => {
         }
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     //点击注册按钮提交数据
+    let bSubmit = true;
     const submitData =async ()=>{
         // sCellphone.match(/^\s*$/)判断手机号是否为空
         if(sCellphone.match(/^\s*$/)){
@@ -116,11 +117,14 @@ const RegIndex = (props) => {
         }
         //当上面的所有判断都满足要求之后,就请求接口添加到数据库之中
         let sUrl = config.baseUrl + '/api/home/user/reg?token=' + config.token;
-        //对于密码来说,如果后台没有做加密的话,前端就要做md加密
-        let res = await request(sUrl , 'post' , {vcode : sCode , cellphone:sCellphone , password : sPassword})
-        if(res.code === 200){
-            //注册成功直接跳转到登录页面
-            props.history.goBack();
+        if(bSubmit){
+            bSubmit = false;
+            //对于密码来说,如果后台没有做加密的话,前端就要做md加密
+            let res = await request(sUrl , 'post' , {vcode : sCode , cellphone:sCellphone , password : sPassword})
+            if(res.code === 200){
+                //注册成功直接跳转到登录页面
+                props.history.goBack();
+            }
         }
     }
     //显示密码是明码还是暗码
