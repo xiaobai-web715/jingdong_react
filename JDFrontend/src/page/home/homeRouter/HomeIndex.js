@@ -59,6 +59,7 @@ const HomeIndex = (props) => {
         //!!!如何在卸载的时候取消掉事件监听函数,这里在useEffect中也有解决方式,就是返回一个函数,当useEffect返回的是一个函数的时候,React将会在执行清除操作时调用它
         return()=>{
             isUnmounted = true;
+            //什么时候卸载的可以打印一下用锚点去操作)
             window.removeEventListener('scroll' , eventScorll)
         }
     },[])

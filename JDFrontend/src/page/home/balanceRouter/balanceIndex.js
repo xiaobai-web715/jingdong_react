@@ -4,6 +4,7 @@ import Subheader from '../../../components/header/subheader'
 import { safeAuth } from '../../../assets/js/utils/utils'
 import config from '../../../assets/js/conf/config'
 import { request } from '../../../assets/js/libs/request'
+import { Toast } from 'antd-mobile'
 import '../../../assets/css/common/balance/index.css'
 import _ from 'lodash'
 
@@ -26,18 +27,21 @@ const BalanceIndex = (props) => {
         props.history.replace(config.path + url)
     } 
     useEffect(() => {
+        let isUnmounted = false;
         if(sessionStorage['addressId'] !== undefined){
-            getAddress();
+            getAddress(isUnmounted);
         }else{
-            getDefaultAddress();
+            getDefaultAddress(isUnmounted);
         }
-
+        return () => {
+            isUnmounted = true
+        }
     } , [])// eslint-disable-line react-hooks/exhaustive-deps
     //获取收货地址
-    const getAddress = async() => {
+    const getAddress = async(isUnmounted) => {
             let sUrl = config.baseUrl + '/api/user/address/info?uid=' + uid + '&aid=' + sessionStorage['addressId'] + '&token='+config.token
             let res = await request(sUrl);
-            if(res.code === 200){
+            if(res.code === 200 && !isUnmounted){
                 setSName(_.get(res , ['data' , 'name']))
                 setSAddress(_.get(res , ['data' , 'address']))
                 setSCellphone(_.get(res , ['data' , 'cellphone']))
@@ -47,11 +51,11 @@ const BalanceIndex = (props) => {
             }
     }
     //获取默认收货地址
-    const getDefaultAddress = async() => {
+    const getDefaultAddress = async(isUnmounted) => {
         let sUrl = config.baseUrl + '/api/user/address/defaultAddress?uid=' + uid + '&token=' + config.token;
         let res = await request(sUrl);
-        if(res.code === 200){
-            //这里加了localStorage就要在退出登录的时候去掉这个缓存
+        if(res.code === 200 && !isUnmounted){
+            //这里加了localStorage所以就要在退出登录的时候去掉这个缓存
             localStorage['addressId'] = res.data.aid;
             setSName(_.get(res , ['data' , 'name']))
             setSAddress(_.get(res , ['data' , 'address']))
@@ -59,6 +63,19 @@ const BalanceIndex = (props) => {
             setSProvince(_.get(res , ['data' , 'province']))
             setSCity(_.get(res , ['data' , 'city']))
             setSArea(_.get(res , ['data' , 'area']))
+        }
+    }
+    //提交收货地址
+    const submitOrder = () => {
+        let sAddressId = sessionStorage['addressId'] || localStorage['addressId']
+        if(sAddressId !== undefined){
+            if(total > 0){
+
+            }else{
+                Toast.info('您还没有选择商品' , 2)
+            }
+        }else{
+            Toast.info('请选择收货地址' , 2)
         }
     }
     return (
@@ -141,7 +158,7 @@ const BalanceIndex = (props) => {
                 <div className='price-wrap'>
                     <span>实际金额:</span><span>￥{parseFloat(Math.round(total + freight).toFixed(2))}</span>
                 </div>
-                <div className='balance-btn'>提交订单</div>
+                <div className='balance-btn' onClick={submitOrder}>提交订单</div>
             </div>
         </div>
     )

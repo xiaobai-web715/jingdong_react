@@ -38,21 +38,30 @@ const AddressIndex = (props) => {
         e.stopPropagation();
     }
     //获取收货地址列表
-    const getAddress = async() => {
+    const getAddress = async(isUnmounted) => {
         let sUrl = config.baseUrl + '/api/user/address/index?uid='+uid + '&token=' + config.token;
         let res = await request(sUrl)
-        if(res.code === 200){
+        if(res.code === 200 && !isUnmounted){
             setAAddress(_.get(res , ['data'] , []));
         }
     }
     useEffect(() => {
-        getAddress();
+        let isUnmounted = false;
+        getAddress(isUnmounted);
+        return () => {
+            isUnmounted = true;
+        }
     } , []) // eslint-disable-line react-hooks/exhaustive-deps
     //点击选择收货地址
     const selectAddress = (aid) => {
         // sessionStorage是一个长期的临时存储,当我退出的时候相应的也要去清空这里面的缓存
         sessionStorage['addressId'] = aid;
         props.history.replace(config.path + 'balance/index')
+    }
+    //点击修改收货地址
+    const modAddress = (e , aid) => {
+        pushPage('address/mod?aid=' + aid)
+        e.stopPropagation();
     }
     return (
         <div className='address-page'>
@@ -84,7 +93,8 @@ const AddressIndex = (props) => {
                                     </div>
                                 </div>
                                 <div className='handle-wrap'>
-                                    <div className='edit'></div>
+                                    {/* 下面这俩函数都需要阻止冒泡事件 */}
+                                    <div className='edit' onClick={e => {modAddress(e , item.aid)}}></div>
                                     {/* 学到这里的总结如果点击事件里面不用传参的话就可以直接写函数名,如果需要传参的话,必须加个.bind(null)因为这样即达到了传参的要求,又不会立即执行 */}
                                     <div className='del' onClick={e => {delAddress(index , item.aid , e)}}></div>
                                 </div>

@@ -16,6 +16,7 @@ const RegIndex = lazy(() => import('./page/home/regRouter/regIndex'))
 const BalanceIndex = lazy(() => import('./page/home/balanceRouter/balanceIndex'))
 const AddressIndex = lazy(() => import('./page/home/address/index'))
 const AddressAdd = lazy(() => import('./page/home/address/add'))
+const AddressMod = lazy(() => import('./page/home/address/mod'))
 
 function RouterComponent() {
   return (
@@ -38,8 +39,11 @@ function RouterComponent() {
             {/* 这里加了这个路由认证就不会路由跳转而导致页面闪抖了 */}
             <AuthRoute path = {config.path + 'balance/index'}  component={BalanceIndex}></AuthRoute>
             <AuthRoute path = {config.path + 'address/index'}  component={AddressIndex}></AuthRoute>
+            {/* 添加收货地址 */}
             <AuthRoute path = {config.path + 'address/add'}  component={AddressAdd}></AuthRoute>
-            <Redirect to = {config.path +'jd/home'}></Redirect>s
+            {/* 修改收货地址 */}
+            <AuthRoute path = {config.path + 'address/mod'}  component={AddressMod}></AuthRoute>
+            <Redirect to = {config.path +'jd/home'}></Redirect>
           </Switch>
         </Suspense>
       </Router>
