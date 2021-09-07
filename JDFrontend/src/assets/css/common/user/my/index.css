@@ -1,0 +1,168 @@
+.user-page{
+    width:100%;
+    height:100vh;
+}
+
+.user-info-wrap{
+    width:100%;
+    height:5.6rem;
+    background-image:url('../../../../images/user/my/mybg.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position: center;
+    margin-top:2.04rem;
+    position:relative;
+}
+
+.user-info-wrap .head{
+    width:2.4rem;
+    height:2.4rem;
+    position: absolute;
+    z-index:1;
+    left:5%;
+    bottom:15%;
+}
+
+.user-info-wrap .head img{
+    width:100%;
+    height:100%;
+    border-radius:100%;
+}
+
+.user-info-wrap .nickname{
+    width:auto;
+    height:auto;
+    white-space:nowrap;
+    position:absolute;
+    left:27%;
+    bottom:35%;
+    z-index:1;
+    font-size:0.48rem;
+    color:#FFFFFF;
+}
+
+.user-info-wrap .points{
+    width:auto;
+    height:auto;
+    white-space:nowrap;
+    z-index:1;
+    position:absolute;
+    left:27%;
+    bottom:20%;
+    font-size:0.48rem;
+    color:#FFFFFF;
+}
+
+.order-name-wrap{
+    width:100%;
+    height:1.6rem;
+    background-color:#FFFFFF;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:1px;
+}
+
+.order-name-wrap .order-name{
+    font-size:0.56rem;
+    margin-left:3%;
+}
+
+.order-name-wrap .show-order{
+    font-size:0.48rem;
+    margin-right:3%;
+}
+
+.order-status-wrap{
+    width:80%;
+    height:2.8rem;
+    background-color:#FFFFFF;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-left:10%;
+    padding-right:10%;
+}
+
+.order-status-wrap .item{
+    width:2rem;
+    height:auto;
+}
+
+.order-status-wrap .item .icon{
+    width:1rem;
+    height:1rem;
+    margin:0 auto;
+}
+
+.order-status-wrap .item .wait{
+    background-image:url('../../../../images/user/my/pay.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+.order-status-wrap .item .take{
+    background-image:url('../../../../images/user/my/shouhuo.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+.order-status-wrap .item .comment{
+    background-image:url('../../../../images/user/my/comment.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+.order-status-wrap .item .text{
+    width:100%;
+    height:100%;
+    font-size:0.48rem;
+    text-align:center;
+}
+
+.menu-list-wrap{
+    margin-top:0.6rem;
+    width:100%;
+    height:14rem;
+    background-color:#FFFFFF;
+}
+
+.menu-list-wrap ul{
+    width:87%;
+    height:1.6rem;
+    border-bottom:1px solid #EFEFEF;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-left:10%;
+    padding-right:3%;
+}
+
+.menu-list-wrap ul li:nth-child(1){
+    font-size:0.64rem;
+}
+
+.menu-list-wrap ul li:nth-child(2){
+    width:0.8rem;
+    height:0.8rem;
+    background-image:url('../../../../images/common/right_arrow.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+.menu-list-wrap .btn{
+    width:70%;
+    height:1.6rem;
+    margin:0 auto;
+    background-color:#E51B19;
+    border-radius:5px;
+    font-size:0.64rem;
+    color:#FFFFFF;
+    text-align:center;
+    line-height:1.6rem;
+    margin-top:0.8rem;
+}
