@@ -63,7 +63,6 @@ const UserRouter = (props) => {
             let sUrl = config.baseUrl + '/api/user/myinfo/userinfo/uid/'+ uid + '?token=' + config.token;
             try{
                 const res = await request(sUrl);
-                console.log(res)
                 if(res.code === 200 && !obj.isUnmounted){
                     if(_.get(res , ['data' , 'head'])){
                         setSHead(_.get(res , ['data' , 'head']))
@@ -83,6 +82,10 @@ const UserRouter = (props) => {
             obj.isUnmounted = true
         }
     } , [])// eslint-disable-line react-hooks/exhaustive-deps
+    //通过点击事件跳转页面
+    const pushPage = (url) => {
+        props.history.push(config.path + url);
+    }
     return (
         <div className='user-page'>
             <Subheader title='会员中心'></Subheader>
@@ -112,7 +115,7 @@ const UserRouter = (props) => {
                 </div>
             </div>
             <div className='menu-list-wrap'>
-                <ul>
+                <ul onClick={pushPage.bind(null , 'profile/index')}>
                     <li>个人资料</li>
                     <li></li>
                 </ul>

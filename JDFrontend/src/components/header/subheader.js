@@ -14,11 +14,14 @@ const Subheader = (props) => {
             props.history.goBack();
         }
     }
+    const getClick = () => {
+        props.rightBtn()
+    }
     return (
         <div className='sub-header'>
             <div className='back' onClick={GoBack.bind(null)}></div>
             <div className='title'>{props.title}</div>
-            <div className={props['right-text'] !== ''?'right-btn':'right-btn hide'}>{props['right-text']}</div>
+            <div className={props['right-text'] !== ''?'right-btn':'right-btn hide'} onClick={getClick}>{props['right-text']}</div>
         </div>
     )
 }
