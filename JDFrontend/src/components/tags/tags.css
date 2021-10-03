@@ -1,0 +1,23 @@
+.tags-wrap{
+    width:100%;
+    height:1.6rem;
+    background-color:#FFFFFF;
+    position:fixed;
+    z-index:2;
+    left:0;
+    top:2.04rem;
+    border-bottom:#DCDCDC solid 1px;
+    display:flex;
+}
+
+.tags-wrap .tags{
+    width:25%;
+    height:100%;
+    text-align:center;
+    font-size:0.56rem;
+    line-height:1.6rem;
+}
+
+.tags-wrap .tags.active{
+    border-bottom:#E42321 solid 1px;
+}

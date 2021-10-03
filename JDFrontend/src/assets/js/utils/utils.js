@@ -13,7 +13,7 @@ function lazyImg(){
     })
 }
 
-//获取url?后面部分的方法
+//获取url?后面部分的方法,这些保存在了props.location.search里面,下面的方法返回一个对象(对象中有解析出来的search属性 => 这个属性是包含键值对的一个对象)
 function localParam(search , hash){
     // search如果是传值的话就用传来的值计算，如果没有传值，就默认window.location.search也就是url后面的？后面的那部分
     search = search || window.location.search

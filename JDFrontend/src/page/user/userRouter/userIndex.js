@@ -98,20 +98,20 @@ const UserRouter = (props) => {
             </div>
             <div className='order-name-wrap'>
                 <div className='order-name'>全部订单</div>
-                <div className='show-order'>查看全部订单 &gt;</div>
+                <div className='show-order' onClick = {pushPage.bind(null , 'myorder/order?status=all')}>查看全部订单 &gt;</div>
             </div>
             <div className='order-status-wrap'>
                 <div className='item'>
                     <div className='icon wait'></div>
-                    <div className='text'>待支付</div>
+                    <div className='text' onClick = {pushPage.bind(null , 'myorder/order?status=0')}>待支付</div>
                 </div>
                 <div className='item'>
                     <div className='icon take'></div>
-                    <div className='text'>待收货</div>
+                    <div className='text' onClick = {pushPage.bind(null , 'myorder/order?status=1')}>待收货</div>
                 </div>
                 <div className='item'>
                     <div className='icon comment'></div>
-                    <div className='text'>待评价</div>
+                    <div className='text' onClick = {pushPage.bind(null , 'myorder/review?status=2')}>待评价</div>
                 </div>
             </div>
             <div className='menu-list-wrap'>

@@ -20,7 +20,7 @@ html , body{
 @media screen and (min-width : 280px) {
     html , body {
         font-size : 15.13px !important;
-        /* 280*20/370这里是以375像素为基准 */
+        /* 280/370*20这里是以375像素为基准 */
     }
 }
 

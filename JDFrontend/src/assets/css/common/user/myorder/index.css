@@ -1,0 +1,10 @@
+.order-page{
+    width:100%;
+    min-height:100vh;
+    background-color:#FFFFFF;
+}
+
+.order-page .order-main{
+    width:100%;
+    padding-top:3.6rem;
+}

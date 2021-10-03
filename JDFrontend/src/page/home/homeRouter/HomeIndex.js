@@ -43,7 +43,7 @@ const HomeIndex = (props) => {
         let iScorllTop = 0;
         const eventScorll = () =>{
             // console.log('isUnmounted' , isUnmounted)
-            //这里有个严重的问题目前还不清楚到底是啥原因,不过在点击路由跳转的时候还是会触发一遍这个监听函数,然后导致执行获取到的iScorllTop是跳转的路由界面的值
+            //这里有个严重的问题目   前还不清楚到底是啥原因,不过在点击路由跳转的时候还是会触发一遍这个监听函数,然后导致执行获取到的iScorllTop是跳转的路由界面的值
             if(!isUnmounted){
                 // console.log('document.documentElement.scrollTop' , document.documentElement.scrollTop)
                 // console.log('document.body.scrollTop' , document.body.scrollTop)
@@ -60,7 +60,7 @@ const HomeIndex = (props) => {
         return()=>{
             isUnmounted = true;
             //什么时候卸载的可以打印一下用锚点去操作)
-            window.removeEventListener('scroll' , eventScorll)
+            window.removeEventListener('scroll' , eventScorll , false)
         }
     },[])
     // 获取接口数据

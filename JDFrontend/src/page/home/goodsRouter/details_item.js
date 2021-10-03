@@ -47,8 +47,6 @@ const DetailsItem = (props) => {
     }
     useEffect(() => {
         // 解决单页面应用连续两个页面都有滚动条而导致的滚动条定位问题
-        // console.log('我是路由跳转document.documentElement.scrollTop' , document.documentElement.scrollTop)
-        // console.log('我是路由跳转document.body.scrollTop' , document.body.scrollTop)
         setScrollTop(0);
     },[])
     //获取轮播图数据和商品信息数据
