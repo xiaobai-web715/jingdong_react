@@ -16,7 +16,10 @@ const Tags = (props) => {
         }
     } , [props]) // eslint-disable-line react-hooks/exhaustive-deps
     const replacePage = url => {
-        props.history.replace(config.path + url)
+        props.history.replace(config.path + 'transfer')
+        setTimeout(() => {
+            props.history.replace(config.path + url)
+        } , 10)
     }
     return (
         <div className='tags-wrap'>

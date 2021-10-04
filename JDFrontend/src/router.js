@@ -20,6 +20,8 @@ const AddressMod = lazy(() => import('./page/home/address/mod'))
 const BalanceEnd = lazy(() => import('./page/home/balanceRouter/endIndex'))
 const ProfileIndex = lazy(() => import('./page/user/profile/profileIndex'))
 const MyOrderIndex = lazy(() => import('./page/user/myorder/index'))
+//路由中转专用
+const Transfer = lazy(() => import('./page/transfer/index'))
 
 function RouterComponent() {
   return (
@@ -52,6 +54,8 @@ function RouterComponent() {
             <AuthRoute path = {config.path + 'profile/index'}  component={ProfileIndex}></AuthRoute>
             {/* 全部订单页面 */}
             <AuthRoute path = {config.path + 'myorder'}  component={MyOrderIndex}></AuthRoute>
+            {/* 路由中转 */}
+            <Route path = {config.path + 'transfer'}  component={Transfer}></Route>
             <Redirect to = {config.path +'jd/home'}></Redirect>
           </Switch>
         </Suspense>

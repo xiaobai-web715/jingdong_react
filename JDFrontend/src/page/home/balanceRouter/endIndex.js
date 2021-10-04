@@ -20,6 +20,9 @@ const EndIndex = (props) => {
             setOrderNum(_.get(res , ['data' , 'ordernum'] , ''))
         }
     }
+    const pushPage = url  => {
+        props.history.push(config.path + url)
+    }
     useEffect(() => {
         let obj = {isUnmounted : false};
         getOrderNum(obj)
@@ -33,7 +36,7 @@ const EndIndex = (props) => {
             <div className='main'>
                 <div className='list success'>订购成功！</div>
                 <div className='list ordernum'>订单编号 : {orderNum}</div>
-                <div className='list'>查看订单</div>
+                <div className='list' onClick={pushPage.bind(null , 'myorder/order?status=all')}>查看订单</div>
                 <div className='pay-btn'>去付款</div>
             </div>
         </div>

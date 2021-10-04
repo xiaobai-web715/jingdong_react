@@ -1,16 +1,21 @@
 import React , {lazy , Suspense , useEffect , useState} from 'react'
 import {Route , Switch} from 'react-router-dom'
+import {useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
 import Tags from '../../../components/tags/tags'
 import config from '../../../assets/js/conf/config'
-import {localParam} from '../../../assets/js/utils/utils'
+import {localParam , safeAuth} from '../../../assets/js/utils/utils'
 import '../../../assets/css/common/user/myorder/index.css'
 const OrderPage = lazy(() => import('./order'))
 const ReviewPage = lazy(() => import('./review'))
 
 const MyOrderIndex = (props) => {
+    const dispatch = useDispatch(null)
     const [status , setStatus] = useState('')
     const [title , setTitle] = useState('')
+    useEffect(() => {
+        safeAuth(localStorage.getItem('uid') , localStorage.getItem('authToken') , props , dispatch)
+    } , [])// eslint-disable-line react-hooks/exhaustive-deps
     useEffect(() => {
         let isUnmounted = false;
         if(!isUnmounted){
