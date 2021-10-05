@@ -94,13 +94,17 @@ const OrderPage = (props) => {
             Toast.info(res.data , 2)
         })
     }
+    //点击跳转页面
+    const pushPage = url => {
+        props.history.push(config.path + url)
+    }
     return (
         <>
         {
             data.length > 0 ? 
             data.map((item , index) => {
                 return(
-                    <div className='order-list' key={index}>
+                    <div className='order-list' key={index} onClick={pushPage.bind(null , 'order/detail?ordernum=' + item.ordernum)}>
                         <div className='ordernum-wrap'>
                             <div className='ordernum'>订单编号:{item.ordernum}</div>
                             <div className='status'>{item.status === '0' ? '待付款' : (item.status === '1' ? '待收货' : '已收货')}</div>
@@ -121,7 +125,7 @@ const OrderPage = (props) => {
                             <div className='total'>实付金额:￥{item.total}</div>
                             {
                                 item.status !== '2'?(
-                                    <div className='status-btn' onClick={item.status === '0' ? (cancelOrder.bind(null , item.ordernum , index)) : (firmOrder.bind(null , item.ordernum , index))}>{item.status === '0' ? '取消订单' : '确认收货'}</div>
+                                    <div className='status-btn' onClick={item.status === '0' ? (e)=>{cancelOrder(item.ordernum , index) ; e.stopPropagation()} : (e)=>{firmOrder(item.ordernum , index) ; e.stopPropagation()}}>{item.status === '0' ? '取消订单' : '确认收货'}</div>
                                 ):''
                             }
                         </div>
