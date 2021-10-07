@@ -69,7 +69,7 @@ const ReviewPage = (props) => {
                 data.length > 0 ? 
                 data.map((item , index) => {
                     return(
-                        <div className='order-list' key={index} onClick={pushPage.bind(null , 'goods/details/item?gid='+item.gid)}>
+                        <div className='order-list' key={index}>
                             <div className='ordernum-wrap'>
                                 <div className='ordernum'>订单编号:{item.ordernum}</div>
                                 <div className='status'>{item.status === '0' ? '待付款' : (item.status === '1' ? '待收货' : '已收货')}</div>
@@ -78,11 +78,12 @@ const ReviewPage = (props) => {
                                 item.goods.length > 0 ?
                                 item.goods.map((_item , _index) => {
                                     return(
-                                        <div className='item-list2' key={_index}>
+                                        <div className='item-list2' key={_index}  onClick={pushPage.bind(null , 'goods/details/item?gid='+_item.gid)}>
                                             <div className='image'><img src = {require('../../../assets/images/common/lazyImg.jpg').default} alt ={_item.title} data-echo={_item.image}></img></div>
                                             <div className='title'>{_item.title}</div>
                                             <div className='amount'>x{_item.amount}</div>
-                                            <div className='status-btn'>{_item.isreview === '0' ? '评价' : '追加评价'}</div>
+                                            {/* 这里需要注意冒泡事件的影响 */}
+                                            <div className='status-btn' onClick={(e) => {pushPage('order/add_review?gid=' + _item.gid + '&ordernum=' + item.ordernum) ; e.stopPropagation()}}>{_item.isreview === '0' ? '评价' : '追加评价'}</div>
                                         </div>
                                     )
                                 }):''
@@ -94,6 +95,7 @@ const ReviewPage = (props) => {
                     )
                 }):''
             }
+            <button  onClick={(e) => {pushPage('order/add_review') ; e.stopPropagation()}}>评价</button>
         </>
     )
 }
