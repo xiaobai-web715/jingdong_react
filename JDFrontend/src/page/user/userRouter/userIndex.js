@@ -2,6 +2,7 @@ import React , {useState , useEffect} from 'react'
 import { request } from '../../../assets/js/libs/request';
 import {useSelector , useDispatch} from 'react-redux'
 import Subheader from '../../../components/header/subheader'
+// import { safeAuth } from '../../../assets/js/utils/utils';
 import config from '../../../assets/js/conf/config'
 import {Modal} from 'antd-mobile'
 import _ from 'lodash'
@@ -15,11 +16,14 @@ const UserRouter = (props) => {
     const [iPoints , setIPoints] = useState(0) 
     //在这里我们要实现一个需求只有在登录的时候才能看到我的这个界面,不登录的时候点击我的直接跳转到登录页面(这个是对路由那里进行操作,可以转到jdIndex文件看一下)
     const {uid , isLogin} = useSelector(state => state.loginRedux)
+    // const {authToken : auth_token} =  useSelector(state => state.loginRedux)
     const dispatch = useDispatch();
     // 接下来就是实现单点登录的相关操作(下面视频中的讲解是要在虚拟DOM加载之前来实现这个请求来判断是否有权限访问)这里就用到了auth_token,这个只允许一个地方进行登录操作,也就是只有一个页面能有权限访问,后登录的会把前面登录的给挤掉
     //目前我感觉这个单点登录(就是实现了安全验证的要求,只要是localStorage里面存储的auth_token这个值不满足你最新的auth_token的值,请求后端的接口返回来的就不是200状态),你在新的浏览器登录时肯定会产生一个新的auth_token,原来的那个页面刷新之后就会导致auth_token不匹配而导致下面的if语句的里面的操作会执行(不过前提是刷新一下,因为做到实时退出的话就是另一个操作技术了)
     //这里的安全验证问题会在很多地方用到,所以这里可以做一个公用的封装函数
-    // safeAuth(uid , auth_token , props , dispatch)//因为这里要将权限进行开发,所以这部分就可以注释掉了
+    // useEffect(() => {
+    //     safeAuth(uid , auth_token , props , dispatch)//因为这里要将权限进行开放,所以这部分就可以注释掉了
+    // } , [])
     // let sUrl = config.baseUrl + '/api/home/user/safe?token=' + config.token;
     // try{
     //     request(sUrl , 'post' , {uid , auth_token}).then(res => {

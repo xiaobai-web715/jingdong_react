@@ -7,7 +7,7 @@ import { lazyImg } from '../../../assets/js/utils/utils';
 import {request} from '../../../assets/js/libs/request'
 import '../../../assets/css/common/user/myorder/review.css'
 
-const ReviewPage = () => {
+const ReviewPage = (props) => {
     const [data , setData] = useState([])
     const {uid} = useSelector(state => state.loginRedux)
     useEffect(() => {
@@ -59,13 +59,17 @@ const ReviewPage = () => {
     useEffect(() => {
         lazyImg()
     } , [data])
+    //点击商品跳转到商品详情页
+    const pushPage = (url) => {
+        props.history.push(config.path + url)
+    }
     return (
         <>
             {
                 data.length > 0 ? 
                 data.map((item , index) => {
                     return(
-                        <div className='order-list' key={index}>
+                        <div className='order-list' key={index} onClick={pushPage.bind(null , 'goods/details/item?gid='+item.gid)}>
                             <div className='ordernum-wrap'>
                                 <div className='ordernum'>订单编号:{item.ordernum}</div>
                                 <div className='status'>{item.status === '0' ? '待付款' : (item.status === '1' ? '待收货' : '已收货')}</div>

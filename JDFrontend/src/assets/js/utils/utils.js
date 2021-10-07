@@ -40,7 +40,7 @@ const setScrollTop = (val) => {
         // 兼容谷歌和火狐的写法
         document.body.scrollTop = val;
         document.documentElement.scrollTop = val;
-    } , 400)
+    } , 300)
 }
 
 //会员登录安全验证
