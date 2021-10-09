@@ -1,0 +1,45 @@
+.modpwd-page{
+    width:100%;
+    min-height:100vh;
+    background-color:#FFFFFF;
+}
+
+.modpwd-page .main{
+    width:100%;
+    padding-top:2.8rem;
+}
+
+.modpwd-page .main .input-wrap{
+    width: 93%;
+    height:1.6rem;
+    border:#c5cbcf solid 1px;
+    border-radius:4px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.modpwd-page .main .input-wrap input{
+    width:95%;
+    height:100%;
+    font-size: 0.56rem;
+    margin-left:0.4rem;
+}
+
+.modpwd-page .main .switch-wrap{
+    width:20%;
+}
+
+.modpwd-page .main .save-btn{
+    width:93%;
+    height:1.6rem;
+    background-color:#E42321;
+    font-size:0.56rem;
+    margin:0 auto;
+    color:#FFFFFF;
+    text-align:center;
+    line-height:1.6rem;
+    border-radius:4px;
+    margin-top:0.4rem;
+}

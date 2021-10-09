@@ -25,6 +25,7 @@ const AddReview = lazy(() => import('./page/user/myorder/add_review'))
 const UserAddressIndex = lazy(() => import('./page/user/address/index'))
 const UserAddressMod = lazy(() => import('./page/user/address/mod'))
 const UserMobileIndex = lazy(() => import('./page/user/mobile/index'))
+const UserModpwdIndex = lazy(() => import('./page/user/modpwd/index'))
 //路由中转专用
 const Transfer = lazy(() => import('./page/transfer/index'))
 
@@ -69,6 +70,8 @@ function RouterComponent() {
             <AuthRoute path = {config.path + 'user/address/mod'}  component={UserAddressMod}></AuthRoute>
             {/* 绑定手机号页面 */}
             <AuthRoute path = {config.path + 'user/mobile/index'}  component={UserMobileIndex}></AuthRoute>
+            {/* 修改密码页面 */}
+            <AuthRoute path = {config.path + 'user/modpwd/index'}  component={UserModpwdIndex}></AuthRoute>
             {/* 路由中转 */}
             <Route path = {config.path + 'transfer'}  component={Transfer}></Route>
             <Redirect to = {config.path +'jd/home'}></Redirect>

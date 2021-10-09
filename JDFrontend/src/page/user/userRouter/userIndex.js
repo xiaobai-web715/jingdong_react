@@ -131,7 +131,7 @@ const UserRouter = (props) => {
                     <li>绑定手机</li>
                     <li></li>
                 </ul>
-                <ul>
+                <ul onClick={pushPage.bind(null , 'user/modpwd/index')}>
                     <li>修改密码</li>
                     <li></li>
                 </ul>
