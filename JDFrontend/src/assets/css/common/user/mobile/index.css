@@ -1,0 +1,96 @@
+.mobile-page{
+    width:100%;
+    min-height:100vh;
+    background-color:#FFFFFF;
+}
+
+.mobile-page .main{
+    width:100%;
+    padding-top:2.04rem;
+}
+
+.mobile-page .main .tip{
+    width:100%;
+    height:2rem;
+    background-color:#F3F5C4;
+    color:#ac7700;
+    font-size:0.56rem;
+    display:flex;
+    align-items:center;
+}
+
+.mobile-page .main .tip .icon{
+    width:0.8rem;
+    height:0.8rem;
+    background-image:url('../../../../images/user/mobile/tip.png');
+    background-size:100%;
+    background-position:center;
+    background-repeat:no-repeat;
+    margin-left:0.8rem;
+    margin-right:0.4rem;
+}
+
+.mobile-page .main .tip .text{
+    width:auto;
+    height:auto;
+}
+
+.mobile-page .main .input-wrap{
+    width: 93%;
+    height:1.6rem;
+    border:#c5cbcf solid 1px;
+    border-radius:4px;
+    margin:0 auto;
+}
+
+.mobile-page .main .input-wrap::after{
+    content:'';
+    display:block;
+    clear:both;
+}
+
+.mobile-page .main .input-wrap .cellphone{
+    width:93%;
+    height:90%;
+    font-size:0.56rem;
+    margin-left:0.4rem;
+    margin-top:0.1rem;
+    overflow:hidden;
+}
+
+.mobile-page .main .input-wrap .code{
+    width:69%;
+    height:90%;
+    font-size: 0.56rem;
+    margin-left:0.4rem;
+    margin-top:0.1rem;
+    float:left;
+}
+
+.mobile-page .main .input-wrap .code-btn{
+    width:28%;
+    height:100%;
+    border-left:#EFEFEF 1px solid;
+    float:left;
+    font-size:0.56rem;
+    color:#717376;
+    text-align:center;
+    line-height:1.6rem;
+}
+
+.mobile-page .main .input-wrap .code-btn.sucess{
+    color:#EB1625;
+}
+
+.mobile-page .main .save-btn{
+    width:93%;
+    height:1.6rem;
+    background-color:#E42321;
+    font-size:0.56rem;
+    margin:0 auto;
+    color:#FFFFFF;
+    text-align:center;
+    line-height:1.6rem;
+    border-radius:4px;
+    margin-top:0.4rem;
+}

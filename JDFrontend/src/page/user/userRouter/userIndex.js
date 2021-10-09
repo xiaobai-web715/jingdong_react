@@ -127,7 +127,7 @@ const UserRouter = (props) => {
                     <li>收货地址</li>
                     <li></li>
                 </ul>
-                <ul>
+                <ul onClick={pushPage.bind(null , 'user/mobile/index')}>
                     <li>绑定手机</li>
                     <li></li>
                 </ul>

@@ -1,4 +1,4 @@
-import React , {useState , useEffect}from 'react'
+import React , {useState , useEffect , useRef}from 'react'
 import { request } from '../../../assets/js/libs/request'
 import config from '../../../assets/js/conf/config'
 import {Switch , Toast} from 'antd-mobile'
@@ -7,7 +7,7 @@ import '../../../assets/css/common/reg/reg.css'
 
 const RegIndex = (props) => {
     //定义一个变量,目的是为了清除定时函数
-    let timer = null;
+    let timer = useRef(null);
     //定义一个变量用来组织当点击请求短信验证码之后再次点击仍会触发的效果
     // let bSendCode = true;这样不行,好像是状态改变会使得这些变量被重新再次赋值,这样写它一直就是true,不能变成false达到阻止再次点击触发定时函数的效果
     const [bSendCode , setBSendCode] = useState(true)
@@ -37,6 +37,13 @@ const RegIndex = (props) => {
             }
         }
     } , [sCellphone])// eslint-disable-line react-hooks/exhaustive-deps
+    //检测手机号是否注册过(本课程的第一个post请求,post请求有别于get请求)
+    const isSameCellphone = () =>{
+        let sUrl = config.baseUrl + '/api/home/user/isreg?token=' + config.token
+        // 13717628483
+        let res = request(sUrl , 'post' , {username :sCellphone}).then(res => res);
+        return res
+    } 
     //点击获取短信验证码
     const getCode =async() =>{
         if(bSendCode && bCodeSuccess){
@@ -51,12 +58,12 @@ const RegIndex = (props) => {
             setBSendCode(false);
             let iTime = 10;
             setSCodeText('重新发送('+iTime+'s)')
-            timer = setInterval(() =>{
+            timer.current = setInterval(() =>{
                 if(iTime > 0){
                     iTime--;
                     setSCodeText('重新发送('+iTime+'s)')
                 }else{
-                    clearInterval(timer);
+                    clearInterval(timer.current);
                     setBSendCode(true);
                     setSCodeText('获取短信验证码')
                     setBCodeSuccess(true)
@@ -69,7 +76,8 @@ const RegIndex = (props) => {
         //这行代码就是为了在切换页面时来改变title标题
         document.getElementById('title').innerText = '会员注册'
         return () =>{
-            clearInterval(timer);
+            //这里清除浮动是将定时器的标识放置在useRef创建出来的对象的current属性里面，这样就可以通过清除定时器任务了
+            clearInterval(timer.current);
         }
     },[])// eslint-disable-line react-hooks/exhaustive-deps
     //点击注册按钮提交数据
@@ -136,13 +144,6 @@ const RegIndex = (props) => {
             setSType('password')
         }
     }
-    //检测手机号是否注册过(本课程的第一个post请求,post请求有别于get请求)
-    const isSameCellphone = () =>{
-        let sUrl = config.baseUrl + '/api/home/user/isreg?token=' + config.token
-        // 13717628483
-        let res = request(sUrl , 'post' , {username :sCellphone}).then(res => res);
-        return res
-    } 
     return (
         <div className='reg-page'>
             <Subheader title='会员注册'></Subheader>
