@@ -22,6 +22,8 @@ const ProfileIndex = lazy(() => import('./page/user/profile/profileIndex'))
 const MyOrderIndex = lazy(() => import('./page/user/myorder/index'))
 const OrderDetail = lazy(() => import('./page/user/myorder/details'))
 const AddReview = lazy(() => import('./page/user/myorder/add_review'))
+const UserAddressIndex = lazy(() => import('./page/user/address/index'))
+const UserAddressMod = lazy(() => import('./page/user/address/mod'))
 //路由中转专用
 const Transfer = lazy(() => import('./page/transfer/index'))
 
@@ -60,6 +62,10 @@ function RouterComponent() {
             <AuthRoute path = {config.path + 'order/detail'}  component={OrderDetail}></AuthRoute>
             {/* 评价页面 */}
             <AuthRoute path = {config.path + 'order/add_review'}  component={AddReview}></AuthRoute>
+            {/* 管理收货地址页面 */}
+            <AuthRoute path = {config.path + 'user/address/index'}  component={UserAddressIndex}></AuthRoute>
+            {/* 修改收货地址-我的界面进入的 */}
+            <AuthRoute path = {config.path + 'user/address/mod'}  component={UserAddressMod}></AuthRoute>
             {/* 路由中转 */}
             <Route path = {config.path + 'transfer'}  component={Transfer}></Route>
             <Redirect to = {config.path +'jd/home'}></Redirect>

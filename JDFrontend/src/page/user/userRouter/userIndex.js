@@ -123,7 +123,7 @@ const UserRouter = (props) => {
                     <li>个人资料</li>
                     <li></li>
                 </ul>
-                <ul>
+                <ul onClick={pushPage.bind(null , 'user/address/index')}>
                     <li>收货地址</li>
                     <li></li>
                 </ul>
