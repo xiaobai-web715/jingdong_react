@@ -59,7 +59,6 @@ const MobildIndex = (props) => {
                 setSCodeText('重新发送('+iTime+'s)')
             }
             timer.current = setInterval(() =>{
-                console.log(timer)
                 if(iTime > 0){
                     iTime--;
                     if(!obj.isUnmounted){
@@ -79,6 +78,7 @@ const MobildIndex = (props) => {
         //这行代码就是为了在切换页面时来改变title标题
         document.getElementById('title').innerText = '会员注册'
         return () =>{
+            //这里清除浮动是将定时器的标识放置在useRef创建出来的对象的current属性里面，这样就可以通过清除定时器任务了
             clearInterval(timer.current);
             obj.isUnmounted = true;
         }
