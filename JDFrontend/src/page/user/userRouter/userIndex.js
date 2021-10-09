@@ -135,7 +135,7 @@ const UserRouter = (props) => {
                     <li>修改密码</li>
                     <li></li>
                 </ul>
-                <ul>
+                <ul  onClick={pushPage.bind(null , 'user/myfav/index')}>
                     <li>我的收藏</li>
                     <li></li>
                 </ul>

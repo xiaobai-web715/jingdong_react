@@ -1,9 +1,9 @@
 import React , {useEffect , useState} from 'react'
 //引入redux所需要的钩子
-import {useDispatch} from 'react-redux'
+import {useDispatch , useSelector} from 'react-redux'
 import { setAddCart } from '../../../actions/addCartAction.js'
 import {findDOMNode} from 'react-dom'
-import {getGoodsSwiper , getGoodsAttr , getGoodsReviews} from '../../../assets/js/libs/request.js'
+import {getGoodsSwiper , getGoodsAttr , getGoodsReviews , request} from '../../../assets/js/libs/request.js'
 import { localParam , setScrollTop  , lazyImg} from '../../../assets/js/utils/utils.js'
 import Swiper from '../../../assets/js/libs/swiper.min.js'
 import config from '../../../assets/js/conf/config.js'
@@ -19,6 +19,7 @@ const DetailsItem = (props) => {
         targetCartPanel = null,
         bChoose = false,
         targetPag = null;
+    const {uid ,isLogin} = useSelector(state => state.loginRedux)
     const dispatch = useDispatch();
     //不需要双向绑定的变量可以不用useState来创建,因为这个变量改变并不会立马刷新组件(通俗一点就是我的这个变量是在点击事件这样的函数里面执行的)
     const [gid , setGid] = useState('');
@@ -156,8 +157,14 @@ const DetailsItem = (props) => {
         }
     }
     //加入收藏
-    const addFav = () =>{
-        Toast.info('收藏成功' , 2)
+    const addFav = async() =>{
+        if(isLogin){
+            let url = config.baseUrl + 'api/goods/fav?uid=' + uid + '&gid=' + gid + '&token=' + config.token;
+            let res = await request(url)
+            Toast.info(res.data , 2)
+        }else{
+            Toast.info('请登录会员' , 2)
+        }
     }
     //点击获取更多评论跳转到评论界面
     const replacePage = (url) => {

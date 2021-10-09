@@ -26,6 +26,7 @@ const UserAddressIndex = lazy(() => import('./page/user/address/index'))
 const UserAddressMod = lazy(() => import('./page/user/address/mod'))
 const UserMobileIndex = lazy(() => import('./page/user/mobile/index'))
 const UserModpwdIndex = lazy(() => import('./page/user/modpwd/index'))
+const MyFav = lazy(() => import('./page/user/myfav/index'))
 //路由中转专用
 const Transfer = lazy(() => import('./page/transfer/index'))
 
@@ -72,6 +73,8 @@ function RouterComponent() {
             <AuthRoute path = {config.path + 'user/mobile/index'}  component={UserMobileIndex}></AuthRoute>
             {/* 修改密码页面 */}
             <AuthRoute path = {config.path + 'user/modpwd/index'}  component={UserModpwdIndex}></AuthRoute>
+            {/* 我的收藏页面 */}
+            <AuthRoute path = {config.path + 'user/myfav/index'}  component={MyFav}></AuthRoute>
             {/* 路由中转 */}
             <Route path = {config.path + 'transfer'}  component={Transfer}></Route>
             <Redirect to = {config.path +'jd/home'}></Redirect>

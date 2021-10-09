@@ -49,7 +49,7 @@ const OrderPage = (props) => {
                     //用扩展运算符进行浅拷贝来修改状态(写成这样的箭头函数形式的,并且返回一个我们需要的值,不会触发React Hook useEffect has missing dependencies:data这个警告,这里如果添加一个data依赖的话,会出现问题)
                     if(!choose.isUnmounted){
                         if(res.code === 200){
-                            setData(aReviews => [...aReviews ,  ...(_.get(res , ['data'] , []))]);
+                            setData(data => [...data ,  ...(_.get(res , ['data'] , []))]);
                         }else{
                             setData([]); 
                         }
